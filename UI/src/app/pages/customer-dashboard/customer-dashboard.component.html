@@ -1,0 +1,452 @@
+<div class="max-w-7xl mx-auto px-6 py-8">
+  <!-- Dashboard Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Customer Dashboard</h1>
+    <p class="text-gray-600">View your sent and incoming parcels</p>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="metric-card rounded-xl p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-blue-100 text-sm font-medium">Total Parcels</p>
+          <p class="text-3xl font-bold text-white mt-1">10</p>
+        </div>
+        <div class="bg-white bg-opacity-20 p-3 rounded-full">
+          <svg
+            class="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card rounded-xl p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-blue-100 text-sm font-medium">Total Parcels Sent</p>
+          <p class="text-3xl font-bold text-white mt-1">7</p>
+        </div>
+        <div class="bg-white bg-opacity-20 p-3 rounded-full">
+          <svg
+            class="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card rounded-xl p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-blue-100 text-sm font-medium">
+            Total Parcels Received
+          </p>
+          <p class="text-3xl font-bold text-white mt-1">3</p>
+        </div>
+        <div class="bg-white bg-opacity-20 p-3 rounded-full">
+          <svg
+            class="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.5 1.5 0 004 16.5V8.5A1.5 1.5 0 015.5 7h11A1.5 1.5 0 0118 8.5v7.046z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="bg-white rounded-xl shadow-lg">
+    <div class="p-6 border-b border-gray-200">
+      <h2 class="text-xl font-semibold text-gray-900 mb-2">Delivery History</h2>
+      <p class="text-gray-600 text-sm">
+        Track your package journey from pickup to delivery
+      </p>
+
+      <div class="flex space-x-4 mt-4">
+        <button
+          id="sentTab"
+          class="tab-button bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 active"
+          onclick="switchTab('sent')"
+        >
+          My package history
+        </button>
+        <button
+          id="receivedTab"
+          class="tab-button bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          onclick="switchTab('received')"
+        >
+          Incoming Parcels
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Order ID
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Package
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Date
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Status
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Location
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Weight
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+          <!-- Sent packages data -->
+          <tr class="table-row sent-package">
+            <td
+              class="px-6 py-4 text-sm text-blue-600 font-medium whitespace-nowrap"
+            >
+              YB-001234
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+              Package to John Doe
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+              Jul 17, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-transit">Out for delivery</span>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+              Oak Avenue
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+              Medium
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          <tr class="table-row sent-package">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-001233
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Electronics package
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 16, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-delivered">Delivered</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Main Street
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Medium
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          <tr class="table-row sent-package">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-001232
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Document envelope
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 15, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-delivered">Delivered</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Commerce Drive
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Small
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          <tr class="table-row sent-package">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-001231
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Books package
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 14, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-processing">Processing</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Distribution Center
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Large
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          <tr class="table-row sent-package">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-001230
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Clothing package
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 13, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-delivered">Delivered</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Pine Street
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Medium
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          <tr class="table-row sent-package">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-001229
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Gift package
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 12, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-cancelled">Cancelled</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              --
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              --
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          <tr class="table-row sent-package">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-001228
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Medical supplies
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 11, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-delivered">Delivered</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Health Center
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Small
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+
+          <!-- Received packages data (hidden by default) -->
+          <tr class="table-row received-package" style="display: none">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-002001
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Package from Alice Smith
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 16, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-delivered">Delivered</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Home Address
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Medium
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          <tr class="table-row received-package" style="display: none">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-002002
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Package from Bob Johnson
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 14, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-delivered">Delivered</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Home Address
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Large
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+          <tr class="table-row received-package" style="display: none">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
+            >
+              YB-002003
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              Package from Emma Davis
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Jul 12, 2024
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge status-transit">Out for delivery</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Distribution Center
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              Small
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <a
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-001234']"
+              >
+                View Details
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

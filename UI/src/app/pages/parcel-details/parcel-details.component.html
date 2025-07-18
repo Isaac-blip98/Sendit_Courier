@@ -1,0 +1,137 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-blue-500 p-4">
+  <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-purple-400 to-purple-500 p-4 flex items-center justify-between">
+      <h1 class="text-white text-lg font-semibold">Parcel Details</h1>
+      <button class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+        In Transit
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 space-y-6">
+      
+      <!-- Parcel Info Grid -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="border-l-4 border-purple-400 pl-4">
+          <p class="text-gray-500 text-sm">Parcel ID:</p>
+          <p class="font-semibold text-gray-800">#SND-19504</p>
+        </div>
+
+        <div class="border-l-4 border-purple-400 pl-4">
+          <p class="text-gray-500 text-sm">Status:</p>
+          <p class="font-semibold text-gray-800">In Transit</p>
+        </div>
+
+        <div class="border-l-4 border-purple-400 pl-4">
+          <p class="text-gray-500 text-sm">Sent On:</p>
+          <p class="font-semibold text-gray-800">Jul 14, 2025</p>
+        </div>
+
+        <div class="border-l-4 border-purple-400 pl-4">
+          <p class="text-gray-500 text-sm">Receiver:</p>
+          <p class="font-semibold text-gray-800">John Doe</p>
+        </div>
+
+        <div class="border-l-4 border-purple-400 pl-4">
+          <p class="text-gray-500 text-sm">Weight:</p>
+          <p class="font-semibold text-gray-800">Medium</p>
+        </div>
+
+        <div class="border-l-4 border-purple-400 pl-4">
+          <p class="text-gray-500 text-sm">Destination:</p>
+          <p class="font-semibold text-gray-800">Makadara, Mombasa</p>
+        </div>
+      </div>
+
+      <!-- Location Info -->
+      <div class="space-y-4">
+        <div class="flex items-start space-x-3">
+          <!-- Map Pin Icon -->
+          <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3zm0 0c4 0 7 3 7 7H5c0-4 3-7 7-7z" />
+          </svg>
+          <div>
+            <p class="text-gray-500 text-sm">Pickup Location</p>
+            <p class="font-semibold text-gray-800">Westlands, Nairobi</p>
+          </div>
+        </div>
+
+        <div class="flex items-start space-x-3">
+          <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3zm0 0c4 0 7 3 7 7H5c0-4 3-7 7-7z" />
+          </svg>
+          <div>
+            <p class="text-gray-500 text-sm">Destination Location</p>
+            <p class="font-semibold text-gray-800">Makadara, Mombasa</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Route Map Visualization -->
+      <div class="bg-gray-50 rounded-lg p-6 text-center">
+        <h3 class="text-gray-700 font-semibold mb-6">Route Map Visualization</h3>
+
+        <div class="flex items-center justify-center space-x-4 mb-6">
+          <!-- Created Step -->
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span class="text-xs text-green-600 mt-1 font-medium">Created</span>
+          </div>
+
+          <div class="w-8 h-0.5 bg-purple-300"></div>
+
+          <!-- In Transit Step -->
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span class="text-xs text-blue-600 mt-1 font-medium">In Transit</span>
+          </div>
+
+          <div class="w-8 h-0.5 bg-gray-300"></div>
+
+          <!-- Delivered Step -->
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </div>
+            <span class="text-xs text-gray-500 mt-1 font-medium">Delivered</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification -->
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start space-x-3">
+        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <p class="text-blue-700 text-sm">
+          You will receive an email/SMS once this parcel is delivered.
+        </p>
+      </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="p-6 pt-0">
+      <button class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2">
+        <!-- Arrow Left Icon -->
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span>Back</span>
+      </button>
+    </div>
+  </div>
+</div>

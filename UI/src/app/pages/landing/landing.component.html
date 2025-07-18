@@ -1,0 +1,433 @@
+<section class="bg-gray-100 py-20">
+  <div class="container mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+      <div>
+        <h1 class="text-5xl font-bold mb-6 leading-tight text-gray-800">
+          We provide the best courier services.
+        </h1>
+        <p class="text-lg mb-8 text-gray-600">
+          We deliver your products safely to your home in a reasonable time.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            (click)="modalService.openLogin()"
+            class="bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center gap-2"
+          >
+            Get started
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+      <div class="relative">
+        <img
+          src="assets/Landing.jpg"
+          alt="Courier delivery"
+          class="rounded-2xl shadow-lg w-full object-fill max-h-96 mx-auto"
+        />
+      </div>
+    </div>
+
+    <!-- Features Card -->
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-clock text-blue-600"></i>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-800">On time delivery</h3>
+            <p class="text-sm text-gray-600">We ensure punctual delivery</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-truck text-blue-600"></i>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-800">Fast home delivery</h3>
+            <p class="text-sm text-gray-600">Quick doorstep service</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-shield-alt text-blue-600"></i>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-800">We are your product</h3>
+            <p class="text-sm text-gray-600">Trusted and secure handling</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-20 bg-white">
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-gray-800">How It Works</h2>
+      <p class="text-gray-600 mt-4 max-w-2xl mx-auto">
+        Sending your parcel is easy. Here's how our delivery process works from
+        start to finish.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-12 text-center">
+      <div>
+        <div
+          class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-6"
+        >
+          <i class="fas fa-user-plus text-blue-500 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">
+          1. Create Account
+        </h3>
+        <p class="text-gray-600">
+          Sign up in seconds to manage your deliveries and track everything in
+          one place.
+        </p>
+      </div>
+
+      <div>
+        <div
+          class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-6"
+        >
+          <i class="fas fa-box text-blue-500 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">
+          2. Request Pickup
+        </h3>
+        <p class="text-gray-600">
+          Choose your pickup time and provide delivery details — we’ll take care
+          of the rest.
+        </p>
+      </div>
+
+      <div>
+        <div
+          class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-6"
+        >
+          <i class="fas fa-map-marker-alt text-blue-500 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">
+          3. Track & Receive
+        </h3>
+        <p class="text-gray-600">
+          Get real-time tracking and enjoy on-time, secure delivery to the
+          destination.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-20 bg-white">
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-16">
+      <p
+        class="text-blue-500 font-semibold text-lg mb-2 uppercase tracking-wide"
+      >
+        SERVICES
+      </p>
+      <h2 class="text-4xl font-bold text-gray-800 mb-4">
+        Our services for you
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Business Plan -->
+      <div
+        class="bg-white rounded-2xl p-8 shadow-lg card-hover border border-gray-100"
+      >
+        <div
+          class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto"
+        >
+          <i class="fas fa-briefcase text-blue-500 text-2xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+          For Business
+        </h3>
+        <p class="text-gray-600 mb-6 text-center">
+          We give you complete reliable delivery for your company. We will take
+          full responsibility of the deliveries.
+        </p>
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Corporate goods</span>
+          </li>
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Shipment</span>
+          </li>
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Accessories</span>
+          </li>
+        </ul>
+        <button
+          class="w-full border border-blue-500 text-blue-500 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+        >
+          Learn more
+        </button>
+      </div>
+
+      <!-- Household Plan -->
+      <div
+        class="bg-white rounded-2xl p-8 shadow-lg card-hover border border-gray-100"
+      >
+        <div
+          class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto"
+        >
+          <i class="fas fa-home text-blue-500 text-2xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+          For Household
+        </h3>
+        <p class="text-gray-600 mb-6 text-center">
+          Offering home delivery around the city, where your products will be at
+          your doorstep within 48-72 hours.
+        </p>
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Personal items</span>
+          </li>
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Parcels</span>
+          </li>
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Documents</span>
+          </li>
+        </ul>
+        <button
+          class="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+        >
+          Learn more
+        </button>
+      </div>
+
+      <!-- Personal Plan -->
+      <div
+        class="bg-white rounded-2xl p-8 shadow-lg card-hover border border-gray-100"
+      >
+        <div
+          class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto"
+        >
+          <i class="fas fa-user text-blue-500 text-2xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+          For Personal
+        </h3>
+        <p class="text-gray-600 mb-6 text-center">
+          You can trust us to safely deliver your most sensitive documents to
+          the specific area in a short time.
+        </p>
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Gifts</span>
+          </li>
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Package</span>
+          </li>
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+            <span class="text-gray-700">Documents</span>
+          </li>
+        </ul>
+        <button
+          class="w-full border border-blue-500 text-blue-500 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+        >
+          Learn more
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Track Your Order Section -->
+<section id="track" class="py-20 bg-gray-100">
+  <div class="container mx-auto px-6">
+    <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-16">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">Track your Order</h2>
+        <p class="text-gray-600">
+          Track your order with its own delivery area to deliver you as soon as
+          possible.
+        </p>
+      </div>
+
+      <div class="max-w-md mx-auto">
+        <div class="flex gap-4">
+          <input
+            type="text"
+            placeholder="Enter tracking number"
+            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+          >
+            Track
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Section -->
+    <div class="relative rounded-2xl overflow-hidden shadow-lg">
+      <img
+        src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+        alt="Delivery service"
+        class="w-full h-96 object-cover"
+      />
+      <div
+        class="absolute inset-0 video-overlay flex items-center justify-center"
+      >
+        <div class="text-center text-white">
+          <button
+            class="play-button w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto transition-transform"
+          >
+            <i class="fas fa-play text-white text-xl ml-1"></i>
+          </button>
+          <h3 class="text-2xl font-bold mb-4">FASTEST DELIVERY</h3>
+          <p class="text-lg max-w-md mx-auto">
+            You can get your valuable item in the fastest period of time with
+            safety. Because your emergency is our first priority.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="py-20 bg-white">
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-16">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div
+          class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+        >
+          <i class="fas fa-quote-left text-blue-500"></i>
+        </div>
+        <p class="text-blue-500 font-semibold text-lg uppercase tracking-wide">
+          TESTIMONIAL
+        </p>
+      </div>
+      <h2 class="text-4xl font-bold text-gray-800">Our Awesome Clients</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Testimonial 1 -->
+      <div class="bg-gray-50 rounded-2xl p-8 testimonial-card">
+        <div class="flex items-center mb-6">
+          <div class="flex text-yellow-400">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-6">
+          Great service provider assisted me in getting it and I was really
+          satisfied with the service where I came with the system after shipping
+          from rural area. I was impressed.
+        </p>
+        <div class="flex items-center">
+          <div
+            class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center"
+          >
+            <i class="fas fa-user text-gray-600"></i>
+          </div>
+          <div>
+            <p class="font-semibold text-gray-800">Yea Teslave</p>
+            <p class="text-sm text-gray-500">Chief Executive. CO</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="bg-gray-50 rounded-2xl p-8 testimonial-card">
+        <div class="flex items-center mb-6">
+          <div class="flex text-yellow-400">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-6 font-semibold">Fantastic service!</p>
+        <p class="text-gray-600 mb-6">
+          I purchased a phone from an e-commerce site, and this courier service
+          provider assisted me in getting it delivered on time. That service was
+          quick and dependable. They gave me the option of real-time delivery
+          status...
+        </p>
+        <div class="flex items-center">
+          <div
+            class="w-12 h-12 bg-blue-500 rounded-full mr-4 flex items-center justify-center"
+          >
+            <i class="fas fa-user text-white"></i>
+          </div>
+          <div>
+            <p class="font-semibold text-gray-800">Yea Teslave</p>
+            <p class="text-sm text-gray-500">Chief Executive. CO</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="bg-gray-50 rounded-2xl p-8 testimonial-card">
+        <div class="flex items-center mb-6">
+          <div class="flex text-yellow-400">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-6">
+          I purchased a phone from an e-commerce site, and this courier service
+          provider assisted me in getting it delivered on time. I was impressed
+          with their quick response and the professional packaging.
+        </p>
+        <div class="flex items-center">
+          <div
+            class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center"
+          >
+            <i class="fas fa-user text-gray-600"></i>
+          </div>
+          <div>
+            <p class="font-semibold text-gray-800">John Smith</p>
+            <p class="text-sm text-gray-500">Marketing Manager</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination dots -->
+    <div class="flex justify-center mt-12">
+      <div class="flex space-x-2">
+        <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+        <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
+        <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
+      </div>
+    </div>
+  </div>
+</section>
+

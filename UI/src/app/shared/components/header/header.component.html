@@ -1,0 +1,46 @@
+<header class="bg-white shadow-sm sticky top-0 z-50">
+  <nav class="container mx-auto px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div
+          class="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center"
+        >
+          <i class="fas fa-truck text-white"></i>
+        </div>
+        <span class="text-xl font-bold text-gray-800">SwiftCourier</span>
+      </div>
+      <div class="hidden md:flex items-center space-x-8">
+        <a
+          href="#"
+          class="text-gray-700 hover:text-purple-600 transition-colors"
+          >Home</a
+        >
+        <a
+          href="#track"
+          class="text-gray-700 hover:text-purple-600 transition-colors"
+          >Track Order</a
+        >
+        <a
+          href="#"
+          class="text-gray-700 hover:text-purple-600 transition-colors"
+          >About Us</a
+        >
+        <button
+          class="text-gray-700 hover:text-purple-600"
+          (click)="openLogin()"
+        >
+          Login
+        </button>
+        <button
+          class="text-purple-600 border border-purple-600 px-4 py-2 rounded hover:bg-purple-600 hover:text-white transition-colors"
+          (click)="openRegister()"
+        >
+          Register
+        </button>
+      </div>
+      <button class="md:hidden">
+        <i class="fas fa-bars text-gray-700"></i>
+      </button>
+    </div>
+  </nav>
+</header>
