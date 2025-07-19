@@ -15,7 +15,7 @@ interface Parcel {
   imports: [CommonModule, RouterModule],
   selector: 'app-customer-dashboard',
   templateUrl: './customer-dashboard.component.html',
-  styleUrls: ['./customer-dashboard.component.scss'] // or .scss if preferred
+  styleUrls: ['./customer-dashboard.component.scss'] 
 })
 export class CustomerDashboardComponent implements OnInit {
   activeOrderId = 'YB-2024-001234';

@@ -107,6 +107,22 @@
         </button>
       </div>
     </div>
+    
+      <!-- Tabs and Search Bar (added) -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-blue-50 rounded-t-lg px-4 py-2 mt-4 mb-2">
+        <div class="flex space-x-4 overflow-x-auto">
+          <button class="text-blue-600 border-b-2 border-blue-600 font-semibold px-2 py-1 focus:outline-none">ALL (23)</button>
+          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">Ordered (0)</button>
+          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">Picked (1)</button>
+          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">In Transit (10)</button>
+          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">Completed (20)</button>
+          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">Cancelled (2)</button>
+        </div>
+        <div class="mt-2 md:mt-0">
+          <input type="text" placeholder="Search by track id" class="border border-gray-300 rounded px-3 py-1 text-sm focus:ring-2 focus:ring-blue-200" />
+        </div>
+      </div>
+      <!-- End Tabs and Search Bar -->
 
     <!-- Table -->
     <div class="overflow-x-auto">
@@ -176,6 +192,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-001234']"
               >
                 View Details
               </button>
@@ -205,6 +222,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-001233']"
               >
                 View Details
               </button>
@@ -234,6 +252,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-001232']"
               >
                 View Details
               </button>
@@ -263,6 +282,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-001231']"
               >
                 View Details
               </button>
@@ -292,6 +312,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-001230']"
               >
                 View Details
               </button>
@@ -321,6 +342,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-001229']"
               >
                 View Details
               </button>
@@ -350,6 +372,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-001228']"
               >
                 View Details
               </button>
@@ -381,6 +404,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-002001']"
               >
                 View Details
               </button>
@@ -410,6 +434,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <button
                 class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                [routerLink]="['/parcel', 'YB-002002']"
               >
                 View Details
               </button>

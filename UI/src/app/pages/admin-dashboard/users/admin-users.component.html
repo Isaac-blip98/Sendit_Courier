@@ -1,0 +1,50 @@
+<div class="space-y-6">
+  <!-- Tab Bar -->
+  <div class="flex items-center border-b border-gray-200 mb-4">
+    <button class="px-4 py-2 text-blue-700 font-semibold border-b-2 border-blue-700 bg-white">All Users</button>
+  </div>
+
+  <!-- User Table -->
+  <div class="bg-white rounded-xl shadow p-6">
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead>
+          <tr class="bg-blue-50 text-blue-900">
+            <th class="px-4 py-2 text-left text-xs font-semibold">S/N</th>
+            <th class="px-4 py-2 text-left text-xs font-semibold">User</th>
+            <th class="px-4 py-2 text-left text-xs font-semibold">Joined Date</th>
+            <th class="px-4 py-2 text-left text-xs font-semibold">Status</th>
+            <th class="px-4 py-2 text-left text-xs font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of [1,2,3,4,5,6,7,8,9,10]; let i = index" class="border-b">
+            <td class="px-4 py-2">{{ i + 1 }}</td>
+            <td class="px-4 py-2 flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-lg text-blue-700">{{ 'RF'[i % 2] }}</div>
+              <div>
+                <div class="font-semibold text-gray-900">Robert Fox</div>
+                <div class="text-xs text-gray-500">robert.fox&#64;email.com</div>
+              </div>
+            </td>
+            <td class="px-4 py-2">23 Jul 2025</td>
+            <td class="px-4 py-2">
+              <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-600">Active</span>
+            </td>
+            <td class="px-4 py-2">
+              <button class="text-gray-400 hover:text-blue-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="flex items-center justify-between mt-4 text-xs text-gray-400">
+      <span>Showing 1 to 10 of 42 entries</span>
+      <div class="flex space-x-2">
+        <button class="px-3 py-1 rounded bg-gray-100">Previous</button>
+        <button class="px-3 py-1 rounded bg-blue-700 text-white">1</button>
+        <button class="px-3 py-1 rounded bg-gray-100">Next</button>
+      </div>
+    </div>
+  </div>
+</div> 

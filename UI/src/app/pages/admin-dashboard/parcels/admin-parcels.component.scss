@@ -1,0 +1,59 @@
+.bg-white {
+  background: #fff;
+}
+
+.rounded-xl {
+  border-radius: 1rem;
+}
+
+.shadow {
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+}
+
+.text-blue-700 {
+  color: #2563eb;
+}
+
+.bg-blue-50 {
+  background: #eff6ff;
+}
+
+.bg-green-50 {
+  background: #ecfdf5;
+}
+
+.text-green-600 {
+  color: #16a34a;
+}
+
+.bg-blue-50 {
+  background: #eff6ff;
+}
+
+.text-blue-700 {
+  color: #2563eb;
+}
+
+.bg-orange-50 {
+  background: #fff7ed;
+}
+
+.text-orange-600 {
+  color: #ea580c;
+}
+
+.bg-red-50 {
+  background: #fef2f2;
+}
+
+.text-red-600 {
+  color: #dc2626;
+}
+
+button:focus {
+  outline: none;
+}
+
+th, td {
+  font-size: 0.95rem;
+} 

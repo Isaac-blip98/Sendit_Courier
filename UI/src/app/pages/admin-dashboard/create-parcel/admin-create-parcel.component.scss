@@ -1,0 +1,32 @@
+.bg-white {
+  background: #fff;
+}
+
+.rounded-xl {
+  border-radius: 1rem;
+}
+
+.shadow {
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+}
+
+.text-blue-900 {
+  color: #1e3a8a;
+}
+
+.bg-blue-700 {
+  background: #2563eb;
+}
+
+.text-white {
+  color: #fff;
+}
+
+button:focus, input:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #2563eb33;
+}
+
+input, select {
+  font-size: 1rem;
+} 

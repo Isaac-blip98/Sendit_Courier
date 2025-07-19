@@ -1,0 +1,54 @@
+<div class="max-w-2xl mx-auto bg-white rounded-xl shadow p-8">
+  <h2 class="text-2xl font-bold text-blue-900 mb-6">Create Parcel</h2>
+  <form class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Sender</label>
+        <input type="text" class="w-full border border-gray-200 rounded px-3 py-2 text-sm" placeholder="eg. Nelson Customer" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Receiver</label>
+        <input type="text" class="w-full border border-gray-200 rounded px-3 py-2 text-sm" placeholder="eg. Jane Doe" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+        <input type="email" class="w-full border border-gray-200 rounded px-3 py-2 text-sm" placeholder="eg. jane@email.com" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Receiver No</label>
+        <input type="text" class="w-full border border-gray-200 rounded px-3 py-2 text-sm" placeholder="eg. +254 00000000" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Arrival time</label>
+      <div class="flex space-x-2">
+        <button type="button" class="px-4 py-2 rounded bg-gray-100 text-gray-700 font-medium">3 Hrs</button>
+        <button type="button" class="px-4 py-2 rounded bg-gray-100 text-gray-700 font-medium">10 Hrs</button>
+        <button type="button" class="px-4 py-2 rounded bg-blue-700 text-white font-medium">1 Day</button>
+        <button type="button" class="px-4 py-2 rounded bg-gray-100 text-gray-700 font-medium">3 Days +</button>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Enter delivery location</label>
+        <input type="text" class="w-full border border-gray-200 rounded px-3 py-2 text-sm" placeholder="Delivery location" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Enter pick-up location</label>
+        <input type="text" class="w-full border border-gray-200 rounded px-3 py-2 text-sm" placeholder="Pick-up location" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Weight Category</label>
+      <select class="w-full border border-gray-200 rounded px-3 py-2 text-sm">
+        <option>Ultra Light Parcel</option>
+        <option>Light Parcel</option>
+        <option>Medium Parcel</option>
+        <option>Heavy Parcel</option>
+        <option>Extra Heavy Parcel</option>
+        <option>Freight</option>
+      </select>
+    </div>
+    <button type="submit" class="w-full mt-4 py-3 rounded bg-blue-700 text-white font-bold text-lg">Create Parcel</button>
+  </form>
+</div> 

@@ -1,0 +1,23 @@
+.admin-layout aside {
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  border-radius: 0 2rem 2rem 0;
+}
+
+.admin-layout nav a {
+  transition: background 0.2s, color 0.2s;
+}
+
+.admin-layout nav a.bg-blue-50 {
+  background: #e6f0ff;
+  color: #1565c0;
+}
+
+.admin-layout header {
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.03);
+  border-radius: 0 0 1rem 1rem;
+}
+
+.admin-layout main {
+  background: transparent;
+  min-height: 600px;
+} 
