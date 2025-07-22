@@ -7,17 +7,24 @@ import { AdminLayoutComponent } from './pages/admin-dashboard/dashboard-layout/a
 import { AdminDashboardHomeComponent } from './pages/admin-dashboard/dashboard-home/admin-dashboard-home.component';
 import { AdminParcelsComponent } from './pages/admin-dashboard/parcels/admin-parcels.component';
 import { AdminCreateParcelComponent } from './pages/admin-dashboard/create-parcel/admin-create-parcel.component';
+import { AboutComponent } from './pages/about-us/about-us.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
   {
     path: 'dashboard',
-    component: CustomerDashboardComponent },
-    { path: 'parcel/:orderId', component: ParcelDetailsComponent },
-  { path: 'admin', component: AdminLayoutComponent, children: [
-    { path: '', component: AdminDashboardHomeComponent },
-    { path: 'users', component: AdminUsersComponent },
-    { path: 'parcels', component: AdminParcelsComponent },
-    { path: 'create-parcel', component: AdminCreateParcelComponent }
-  ] },
+    component: CustomerDashboardComponent,
+  },
+  { path: 'parcel/:orderId', component: ParcelDetailsComponent },
+  { path: 'about', component: AboutComponent },
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    children: [
+      { path: '', component: AdminDashboardHomeComponent },
+      { path: 'users', component: AdminUsersComponent },
+      { path: 'parcels', component: AdminParcelsComponent },
+      { path: 'create-parcel', component: AdminCreateParcelComponent },
+    ],
+  },
 ];

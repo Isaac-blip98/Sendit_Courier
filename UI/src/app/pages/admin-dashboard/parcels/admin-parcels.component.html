@@ -2,21 +2,21 @@
   <!-- Filter/Search Bar -->
   <div class="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-2 md:space-y-0 mb-4">
     <button class="px-4 py-2 rounded bg-gray-100 text-gray-700 font-medium">Filter By</button>
-    <select class="border border-gray-200 rounded px-3 py-2 text-sm">
-      <option>Weight Category</option>
+    <select class="border border-gray-200 rounded px-3 py-2 text-sm" [(ngModel)]="weightFilter" (ngModelChange)="applyFilters()">
+      <option value="">Weight Category</option>
       <option>Light Parcel</option>
       <option>Medium Parcel</option>
       <option>Heavy Parcel</option>
       <option>Freight</option>
     </select>
-    <select class="border border-gray-200 rounded px-3 py-2 text-sm">
-      <option>Delivery Status</option>
+    <select class="border border-gray-200 rounded px-3 py-2 text-sm" [(ngModel)]="statusFilter" (ngModelChange)="applyFilters()">
+      <option value="">Delivery Status</option>
       <option>Completed</option>
       <option>Picked</option>
       <option>In Transit</option>
       <option>Cancelled</option>
     </select>
-    <button class="px-4 py-2 rounded bg-red-50 text-red-600 font-medium">Reset Filter</button>
+    <button (click)="resetFilters()" class="px-4 py-2 rounded bg-red-50 text-red-600 font-medium">Reset Filter</button>
   </div>
 
   <!-- Parcels Table -->
@@ -29,38 +29,51 @@
             <th class="px-4 py-2 text-left text-xs font-semibold">Delivery Address</th>
             <th class="px-4 py-2 text-left text-xs font-semibold">Date</th>
             <th class="px-4 py-2 text-left text-xs font-semibold">Weight Category</th>
-            <th class="px-4 py-2 text-left text-xs font-semibold">Quote</th>
             <th class="px-4 py-2 text-left text-xs font-semibold">Status</th>
+            <th class="px-4 py-2 text-left text-xs font-semibold">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of [
-            {id: '00001', address: '089 Kutch Green Apt. 448', date: '04 Sep 2025', weight: 'Medium Parcel', quote: '2.1 - 5 kg', status: 'Completed'},
-            {id: '00002', address: '979 Immanuel Ferry Suite 526', date: '04 Sep 2025', weight: 'Light Parcel', quote: '0.6 - 2 kg', status: 'Completed'},
-            {id: '00003', address: '8587 Frida Ports', date: '04 Sep 2025', weight: 'Medium Parcel', quote: '2.1 - 5 kg', status: 'Picked'},
-            {id: '00004', address: '768 Destiny Lake Suite 600', date: '04 Sep 2025', weight: 'Medium Parcel', quote: '2.1 - 5 kg', status: 'Completed'},
-            {id: '00005', address: '042 Mylene Throughway', date: '04 Sep 2025', weight: 'Heavy Parcel', quote: '5.1 - 10 kg', status: 'Completed'},
-            {id: '00006', address: '543 Weinmann Mountain', date: '04 Sep 2025', weight: 'Medium Parcel', quote: '2.1 - 5 kg', status: 'Completed'},
-            {id: '00007', address: 'New Scottieberg', date: '04 Sep 2025', weight: 'Medium Parcel', quote: '2.1 - 5 kg', status: 'Completed'},
-            {id: '00008', address: 'New Jon', date: '04 Sep 2025', weight: 'Freight', quote: 'Above 20 kg', status: 'In Transit'}
-          ]; let i = index" class="border-b">
+          <tr *ngFor="let row of filteredParcels" class="border-b">
             <td class="px-4 py-2 text-blue-700 font-medium">{{ row.id }}</td>
             <td class="px-4 py-2">{{ row.address }}</td>
             <td class="px-4 py-2">{{ row.date }}</td>
             <td class="px-4 py-2">{{ row.weight }}</td>
-            <td class="px-4 py-2">{{ row.quote }}</td>
             <td class="px-4 py-2">
-              <span *ngIf="row.status === 'Completed'" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-600">Completed</span>
-              <span *ngIf="row.status === 'Picked'" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">Picked</span>
-              <span *ngIf="row.status === 'In Transit'" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-orange-50 text-orange-600">In Transit</span>
-              <span *ngIf="row.status === 'Cancelled'" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-600">Cancelled</span>
+              <div class="relative inline-block w-32">
+                <select [(ngModel)]="row.status" (ngModelChange)="onStatusChange(row.id, row.status)"
+                        class="w-full appearance-none rounded-full px-3 py-1 text-xs font-semibold"
+                        [ngClass]="{
+                          'bg-green-50 text-green-600': row.status === 'Completed',
+                          'bg-blue-50 text-blue-700': row.status === 'Picked',
+                          'bg-orange-50 text-orange-600': row.status === 'In Transit',
+                          'bg-red-50 text-red-600': row.status === 'Cancelled'
+                        }">
+                  <option *ngFor="let status of ['Completed', 'Picked', 'In Transit', 'Cancelled']" [value]="status">
+                    {{ status }}
+                  </option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3 text-sm">
+              <div class="flex items-center space-x-4">
+                <button (click)="editParcel(row)" class="text-blue-500 hover:text-blue-700">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button (click)="deleteParcel(row.id)" class="text-red-500 hover:text-red-700">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="flex items-center justify-between mt-4 text-xs text-gray-400">
-      <span>Showing 1 to 8 of 8 entries</span>
+      <span>Showing {{ filteredParcels.length }} of {{ parcels.length }} entries</span>
       <div class="flex space-x-2">
         <button class="px-3 py-1 rounded bg-gray-100">Previous</button>
         <button class="px-3 py-1 rounded bg-blue-700 text-white">1</button>
@@ -68,4 +81,10 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
+<app-edit-parcel-modal
+  [visible]="isEditModalVisible"
+  [parcel]="selectedParcel"
+  (closeEvent)="closeEditModal()"
+  (saveEvent)="saveParcel($event)">
+</app-edit-parcel-modal> 

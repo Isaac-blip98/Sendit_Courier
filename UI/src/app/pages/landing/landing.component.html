@@ -20,9 +20,9 @@
       </div>
       <div class="relative">
         <img
-          src="assets/Landing.jpg"
+          src="assets/Parcel-delivery.jpg"
           alt="Courier delivery"
-          class="rounded-2xl shadow-lg w-full object-fill max-h-96 mx-auto"
+          class="rounded-2xl shadow-lg w-full object-cover max-h-96 mx-auto"
         />
       </div>
     </div>
@@ -129,7 +129,7 @@
 </section>
 
 <!-- Services Section -->
-<section id="services" class="py-20 bg-white">
+<section id="services" class="py-20 bg-gray-50">
   <div class="container mx-auto px-6">
     <div class="text-center mb-16">
       <p
@@ -173,11 +173,12 @@
             <span class="text-gray-700">Accessories</span>
           </li>
         </ul>
-        <button
-          class="w-full border border-blue-500 text-blue-500 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+        <a
+          [routerLink]="['/about']"
+          fragment="business"
+          class="text-purple-600 underline"
+          >Learn More</a
         >
-          Learn more
-        </button>
       </div>
 
       <!-- Household Plan -->
@@ -210,11 +211,12 @@
             <span class="text-gray-700">Documents</span>
           </li>
         </ul>
-        <button
-          class="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+        <a
+          [routerLink]="['/about']"
+          fragment="business"
+          class="text-purple-600 underline"
+          >Learn More</a
         >
-          Learn more
-        </button>
       </div>
 
       <!-- Personal Plan -->
@@ -247,11 +249,12 @@
             <span class="text-gray-700">Documents</span>
           </li>
         </ul>
-        <button
-          class="w-full border border-blue-500 text-blue-500 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+        <a
+          [routerLink]="['/about']"
+          fragment="business"
+          class="text-purple-600 underline"
+          >Learn More</a
         >
-          Learn more
-        </button>
       </div>
     </div>
   </div>
@@ -272,11 +275,13 @@
       <div class="max-w-md mx-auto">
         <div class="flex gap-4">
           <input
+            [(ngModel)]="trackingId"
             type="text"
             placeholder="Enter tracking number"
             class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
+            (click)="trackParcel()"
             class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
           >
             Track
@@ -313,7 +318,7 @@
 </section>
 
 <!-- Testimonials Section -->
-<section id="testimonials" class="py-20 bg-white">
+<section #testimonialsSection id="testimonials" class="py-20 bg-white">
   <div class="container mx-auto px-6">
     <div class="text-center mb-16">
       <div class="flex items-center justify-center gap-4 mb-4">
@@ -330,104 +335,41 @@
     </div>
 
     <div class="grid md:grid-cols-3 gap-8">
-      <!-- Testimonial 1 -->
-      <div class="bg-gray-50 rounded-2xl p-8 testimonial-card">
-        <div class="flex items-center mb-6">
-          <div class="flex text-yellow-400">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
+      <div
+        #testimonialCard
+        *ngFor="let testimonial of testimonials"
+        class="testimonial-card"
+      >
+        <div
+          class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 h-full"
+        >
+          <h3 class="text-blue-600 font-bold text-xl mb-4">
+            {{ testimonial.title }}
+          </h3>
+          <p class="text-gray-600 mb-6">{{ testimonial.text }}</p>
+          <div class="flex items-center justify-between mt-auto">
+            <div class="flex text-blue-500">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="flex items-center">
+              <img
+                [src]="testimonial.avatar"
+                class="w-12 h-12 rounded-full mr-4"
+              />
+              <div>
+                <p class="font-semibold text-gray-800">
+                  {{ testimonial.author }}
+                </p>
+                <p class="text-sm text-gray-500">{{ testimonial.company }}</p>
+              </div>
+            </div>
           </div>
         </div>
-        <p class="text-gray-600 mb-6">
-          Great service provider assisted me in getting it and I was really
-          satisfied with the service where I came with the system after shipping
-          from rural area. I was impressed.
-        </p>
-        <div class="flex items-center">
-          <div
-            class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center"
-          >
-            <i class="fas fa-user text-gray-600"></i>
-          </div>
-          <div>
-            <p class="font-semibold text-gray-800">Yea Teslave</p>
-            <p class="text-sm text-gray-500">Chief Executive. CO</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 2 -->
-      <div class="bg-gray-50 rounded-2xl p-8 testimonial-card">
-        <div class="flex items-center mb-6">
-          <div class="flex text-yellow-400">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-          </div>
-        </div>
-        <p class="text-gray-600 mb-6 font-semibold">Fantastic service!</p>
-        <p class="text-gray-600 mb-6">
-          I purchased a phone from an e-commerce site, and this courier service
-          provider assisted me in getting it delivered on time. That service was
-          quick and dependable. They gave me the option of real-time delivery
-          status...
-        </p>
-        <div class="flex items-center">
-          <div
-            class="w-12 h-12 bg-blue-500 rounded-full mr-4 flex items-center justify-center"
-          >
-            <i class="fas fa-user text-white"></i>
-          </div>
-          <div>
-            <p class="font-semibold text-gray-800">Yea Teslave</p>
-            <p class="text-sm text-gray-500">Chief Executive. CO</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 3 -->
-      <div class="bg-gray-50 rounded-2xl p-8 testimonial-card">
-        <div class="flex items-center mb-6">
-          <div class="flex text-yellow-400">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-          </div>
-        </div>
-        <p class="text-gray-600 mb-6">
-          I purchased a phone from an e-commerce site, and this courier service
-          provider assisted me in getting it delivered on time. I was impressed
-          with their quick response and the professional packaging.
-        </p>
-        <div class="flex items-center">
-          <div
-            class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center"
-          >
-            <i class="fas fa-user text-gray-600"></i>
-          </div>
-          <div>
-            <p class="font-semibold text-gray-800">John Smith</p>
-            <p class="text-sm text-gray-500">Marketing Manager</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pagination dots -->
-    <div class="flex justify-center mt-12">
-      <div class="flex space-x-2">
-        <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-        <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
-        <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
       </div>
     </div>
   </div>
 </section>
-

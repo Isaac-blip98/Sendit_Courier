@@ -1,0 +1,28 @@
+<div *ngIf="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-auto p-6">
+    <h2 class="text-xl font-bold mb-4">Edit Parcel</h2>
+    <form (ngSubmit)="save()" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Address</label>
+        <input type="text" [(ngModel)]="parcel.address" name="address" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Weight Category</label>
+        <input type="text" [(ngModel)]="parcel.weight" name="weight" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Status</label>
+        <select [(ngModel)]="parcel.status" name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+          <option value="Completed">Completed</option>
+          <option value="Picked">Picked</option>
+          <option value="In Transit">In Transit</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="flex justify-end space-x-4">
+        <button type="button" (click)="close()" class="px-4 py-2 bg-gray-200 rounded-md">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Save</button>
+      </div>
+    </form>
+  </div>
+</div> 
