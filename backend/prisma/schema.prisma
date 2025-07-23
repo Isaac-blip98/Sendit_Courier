@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id @default(uuid())
+  name             String
+  email            String    @unique
+  password         String
+  phone            String
+  role             Role      @default(CUSTOMER)
+  profileImage     String?   
+  sentParcels      Parcel[]  @relation("SentParcels")
+  receivedParcels  Parcel[]  @relation("ReceivedParcels")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+}
+
+
+model Courier {
+  id               String     @id @default(uuid())
+  name             String
+  email            String     @unique
+  phone            String
+  isAvailable      Boolean    @default(true)
+  currentLat       Float?
+  currentLng       Float?
+  assignedParcels  Parcel[]   @relation("CourierParcels")
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  deletedAt        DateTime?  
+}
+
+model Parcel {
+  id                String         @id @default(uuid())
+
+  senderId          String
+  receiverId        String
+  assignedCourierId String?
+
+  receiverName      String
+  receiverPhone     String
+  pickupAddress     String
+  pickupLat         Float
+  pickupLng         Float
+  destination       String
+  destinationLat    Float
+  destinationLng    Float
+  weightCategory    WeightCategory
+  status            ParcelStatus   @default(PENDING)
+
+  sender            User     @relation("SentParcels", fields: [senderId], references: [id])
+  receiver          User     @relation("ReceivedParcels", fields: [receiverId], references: [id])
+  assignedCourier   Courier? @relation("CourierParcels", fields: [assignedCourierId], references: [id])
+
+  events            ParcelEvent[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([assignedCourierId])
+}
+
+model ParcelEvent {
+  id         String        @id @default(uuid())
+  parcelId   String
+  status     ParcelStatus
+  location   Json?         // Optional flexible structure
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  parcel     Parcel        @relation(fields: [parcelId], references: [id])
+
+  @@index([parcelId])
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum ParcelStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+enum WeightCategory {
+  LIGHT
+  MEDIUM
+  HEAVY
+}

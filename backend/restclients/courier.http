@@ -1,0 +1,20 @@
+@JWT_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MzNkODIyNC00MDkyLTQ0ZGItOGNkMi01ZDJkMTZmZThjNGQiLCJlbWFpbCI6ImFkbWluQHNlbmRpdC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTMyNjIwODMsImV4cCI6MTc1MzM0ODQ4M30.lsCUG0VrOkn3Lpl7c7yCiPq3-xnel__T9J_ixjdAm2s
+
+### Create Courier (Admin Only)
+POST http://localhost:3000/couriers
+Content-Type: application/json
+Authorization: Bearer {{JWT_TOKEN}}
+
+{
+  "name": "John Courier",
+  "email": "john.courier@sendit.com",
+  "phone": "+254711223344"
+}
+
+### Get All Couriers
+GET http://localhost:3000/couriers
+Authorization: Bearer {{JWT_TOKEN}}
+
+### Get Single Courier
+GET http://localhost:3000/couriers/de806ab0-341d-4ba5-8d0b-5a4aa92d1cce
+Authorization: Bearer {{JWT_TOKEN}}

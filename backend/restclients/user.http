@@ -1,0 +1,18 @@
+### Get all users
+GET http://localhost:3000/users
+
+### Get single user
+GET http://localhost:3000/users/ae3624cc-7156-4d79-be7d-032b62be3f4e
+
+### Update user
+PATCH http://localhost:3000/users/ae3624cc-7156-4d79-be7d-032b62be3f4e
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "phone": "0700000000",
+  "profileImage": "https://cdn.example.com/profile.jpg"
+}
+
+### Soft delete user
+DELETE http://localhost:3000/users/:id

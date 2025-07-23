@@ -1,0 +1,25 @@
+### Register a new user
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "name": "Vans",
+  "email": "Vernita@gmail.com",
+  "password": "vans123",
+  "phone": "0712345678"
+}
+
+
+### Login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+# {
+#   "email": "Vernita@gmail.com",
+#   "password": "vans123"
+# }
+
+{
+  "email": "admin@sendit.com",
+  "password": "admin123"
+}

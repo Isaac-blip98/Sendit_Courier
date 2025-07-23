@@ -1,0 +1,53 @@
+@admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MzNkODIyNC00MDkyLTQ0ZGItOGNkMi01ZDJkMTZmZThjNGQiLCJlbWFpbCI6ImFkbWluQHNlbmRpdC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTMyNjIwODMsImV4cCI6MTc1MzM0ODQ4M30.lsCUG0VrOkn3Lpl7c7yCiPq3-xnel__T9J_ixjdAm2s
+@sender_id = 
+@receiver_id = 
+@parcel_id = bd155845-b4f7-4234-a56e-696afd603ea4
+@courier_id = fc3283f0-a12e-492e-8768-7d595e0e3034
+
+### CREATE a new parcel (Admin only)
+POST http://localhost:3000/parcels
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "senderId": "{{sender_id}}",
+  "receiverId": "{{receiver_id}}",
+  "receiverName": "John Doe",
+  "receiverPhone": "+254712345678",
+  "pickupAddress": "Moi Avenue, Nairobi",
+  "destination": "Thika Road Mall, Nairobi",
+  "weightCategory": "MEDIUM"
+}
+
+### GET all parcels
+GET http://localhost:3000/parcels
+Authorization: Bearer {{admin_token}}
+
+### GET single parcel
+GET http://localhost:3000/parcels/bd155845-b4f7-4234-a56e-696afd603ea4
+Authorization: Bearer {{admin_token}}
+
+### UPDATE parcel (Admin only)
+PATCH http://localhost:3000/parcels/bd155845-b4f7-4234-a56e-696afd603ea4
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "status": "DELIVERED",
+  "destination": "Westlands, Nairobi"
+}
+
+### ASSIGN parcel to courier
+PATCH http://localhost:3000/parcels/assign
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "parcelId": "{{parcel_id}}",
+  "courierId": "{{courier_id}}"
+}
+
+
+### DELETE parcel (soft delete - Admin only)
+DELETE http://localhost:3000/parcels/:id
+Authorization: Bearer {{admin_token}}
