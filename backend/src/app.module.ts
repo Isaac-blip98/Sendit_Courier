@@ -9,6 +9,12 @@ import { ParcelModule } from './parcels/parcel.module';
 import { CourierController } from './courier/courier.controller';
 import { CourierService } from './courier/courier.service';
 import { CourierModule } from './courier/courier.module';
+import { MailerController } from './mailer/mailer.controller';
+import { MailerService } from './mailer/mailer.service';
+import { AppMailerModule } from './mailer/mailer.module';
+import { ParcelEventsController } from './parcel-events/parcel-events.controller';
+import { ParcelEventsModule } from './parcel-events/parcel-events.module';
+import { ParcelEventsService } from './parcel-events/parcel-events.service';
 
 @Module({
   imports: [
@@ -20,8 +26,10 @@ import { CourierModule } from './courier/courier.module';
     UserModule,
     ParcelModule,
     CourierModule,
+    AppMailerModule,
+    ParcelEventsModule,
   ],
-  controllers: [AppController, CourierController],
-  providers: [AppService, CourierService],
+  controllers: [AppController, CourierController, MailerController, ParcelEventsController, ParcelEventsController],
+  providers: [AppService, CourierService, MailerService, ParcelEventsService],
 })
 export class AppModule {}

@@ -9,12 +9,14 @@ import { IParcel } from './interfaces/parcel.interface';
 import { GeoService } from 'src/common/geo/geo.service';
 import { UpdateParcelDto } from './dtos/update-parcel.dto';
 import { CreateParcelDto } from './dtos/create-parcel.dto';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class ParcelService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly geoService: GeoService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async create(dto: CreateParcelDto): Promise<IParcel> {
@@ -68,7 +70,7 @@ export class ParcelService {
     });
   }
 
-   async assignCourier(parcelId: string, courierId: string): Promise<IParcel> {
+  async assignCourier(parcelId: string, courierId: string): Promise<IParcel> {
     const [parcel, courier] = await Promise.all([
       this.prisma.parcel.findUnique({ where: { id: parcelId } }),
       this.prisma.courier.findUnique({ where: { id: courierId } }),
@@ -86,9 +88,23 @@ export class ParcelService {
     });
 
     // Assign courier to parcel
-    return this.prisma.parcel.update({
+    const updatedParcel = await this.prisma.parcel.update({
       where: { id: parcelId },
       data: { assignedCourierId: courierId },
     });
+
+    //  Notify customer
+    const customer = await this.prisma.user.findUnique({
+      where: { id: parcel.senderId },
+    });
+    if (customer) {
+      await this.mailerService.sendCourierAssignmentEmail(
+        customer.email,
+        courier.name,
+        parcel.id,
+      );
+    }
+
+    return updatedParcel;
   }
 }

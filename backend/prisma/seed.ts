@@ -1,28 +1,42 @@
-import { PrismaClient, Role, ParcelStatus, WeightCategory } from '@prisma/client';
+// ... (keep your existing imports)
+import {
+  PrismaClient,
+  Role,
+  ParcelStatus,
+  WeightCategory,
+} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Hash passwords
-  const adminPassword = await bcrypt.hash('admin123', 10);
+  const adminPassword = await bcrypt.hash('elvis123', 10); // ← update your new admin password here
   const user1Password = await bcrypt.hash('customer1', 10);
   const user2Password = await bcrypt.hash('customer2', 10);
 
-  // Create admin
-  const admin = await prisma.user.upsert({
+  await prisma.user.deleteMany({
     where: { email: 'admin@sendit.com' },
-    update: {},
+  });
+
+  // Create or update admin
+  const admin = await prisma.user.upsert({
+    where: { email: 'ndiranguelvis97@gmail.com' }, // ← NEW EMAIL
+    update: {
+      name: 'Elvis',
+      phone: '0794130919',
+      password: adminPassword,
+    },
     create: {
-      name: 'Admin',
-      email: 'admin@sendit.com',
-      phone: '0700000000',
+      name: 'Elvis',
+      email: 'ndiranguelvis97@gmail.com',
+      phone: '0794130919',
       password: adminPassword,
       role: Role.ADMIN,
     },
   });
 
-  // Create customers
+  // Create customers (unchanged)
   const customer1 = await prisma.user.upsert({
     where: { email: 'user1@example.com' },
     update: {},
@@ -47,7 +61,7 @@ async function main() {
     },
   });
 
-  // Create courier
+  // Courier (unchanged)
   const courier = await prisma.courier.upsert({
     where: { email: 'courier1@sendit.com' },
     update: {},
@@ -61,7 +75,7 @@ async function main() {
     },
   });
 
-  // Create parcels
+  // Parcels (unchanged)
   await prisma.parcel.createMany({
     data: [
       {
@@ -90,14 +104,16 @@ async function main() {
         pickupLng: 36.7219,
         destination: 'Parklands, Nairobi',
         destinationLat: -1.2667,
-        destinationLng: 36.8000,
+        destinationLng: 36.8,
         weightCategory: WeightCategory.HEAVY,
         status: ParcelStatus.IN_TRANSIT,
       },
     ],
   });
 
-  console.log('Seed data created: admin, 2 users, courier, 2 parcels');
+  console.log(
+    'Seed data updated: admin credentials, 2 users, courier, parcels',
+  );
 }
 
 main()

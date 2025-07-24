@@ -3,10 +3,10 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "name": "Vans",
-  "email": "Vernita@gmail.com",
-  "password": "vans123",
-  "phone": "0712345678"
+  "name": "Vanis",
+  "email": "vernitaj485@gmail.com",
+  "password": "vans254",
+  "phone": "0712354678"
 }
 
 
@@ -15,11 +15,35 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 # {
+#   "email": "vernitaj485@gmail.com",
+#   "password": "vans123"
+# }
+
+# {
 #   "email": "Vernita@gmail.com",
 #   "password": "vans123"
 # }
 
 {
-  "email": "admin@sendit.com",
-  "password": "admin123"
+  "email": "ndiranguelvis97@gmail.com",
+  "password": "elvis123"
 }
+
+### Request Password Reset Code
+POST http://localhost:3000/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "vernitaj485@gmail.com"
+}
+
+### Verify Code Only (if needed)### Reset Password
+POST http://localhost:3000/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "vernitaj485@gmail.com",
+  "code": "316264",              
+  "newPassword": "vans123"  
+}
+
