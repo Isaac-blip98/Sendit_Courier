@@ -1,0 +1,70 @@
+@parcelId = 47af5a72-53ca-4469-9aa7-ec759cb06490
+# @parcelId = bd155845-b4f7-4234-a56e-696afd603ea4
+# @parcelId = 877302a5-8353-4056-acd8-c550c6840d4c
+# @parcelId = 051d46ab-3f5d-41e0-8d1e-e3f76b5ce74a
+# @parcelId = c06c1acc-eddc-4ce3-a0cb-ec96d99dedc1
+# @parcelId = 5979cd68-67af-485d-a2eb-e160e62f54c6
+
+### Seed event 1 - Parcel created
+POST http://localhost:3000/parcels/{{parcelId}}/events
+Content-Type: application/json
+
+{
+  "status": "CREATED",
+  "location": {
+    "lat": -1.286389,
+    "lng": 36.817223,
+    "label": "Nairobi - Pickup Office"
+  }
+}
+
+###
+
+### Seed event 2 - Parcel in transit
+POST http://localhost:3000/parcels/{{parcelId}}/events
+Content-Type: application/json
+
+{
+  "status": "IN_TRANSIT",
+  "location": {
+    "lat": -1.312345,
+    "lng": 36.823456,
+    "label": "Westlands Sorting Center"
+  }
+}
+
+###
+
+### Seed event 3 - Out for delivery
+POST http://localhost:3000/parcels/{{parcelId}}/events
+Content-Type: application/json
+
+{
+  "status": "OUT_FOR_DELIVERY",
+  "location": {
+    "lat": -1.300000,
+    "lng": 36.850000,
+    "label": "Kilimani Delivery Route"
+  }
+}
+
+###
+
+### Seed event 4 - Delivered
+POST http://localhost:3000/parcels/{{parcelId}}/events
+Content-Type: application/json
+
+{
+  "status": "DELIVERED",
+  "location": {
+    "lat": -1.295000,
+    "lng": 36.860000,
+    "label": "Customer Residence"
+  }
+}
+
+###
+
+### Fetch all events for parcel
+GET http://localhost:3000/parcels/{{parcelId}}/events
+Accept: application/json

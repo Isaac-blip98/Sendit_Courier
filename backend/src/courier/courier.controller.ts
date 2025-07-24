@@ -8,14 +8,14 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import { CourierService } from './courier.service';
-import { CreateCourierDto } from './dtos/create-courier.dto';
-import { ICourier } from './interfaces/courier.interface';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guards';
 import { RolesGuard } from 'src/common/guards/roles-guard';
 import { Roles } from 'src/common/decorators/roles-decorator';
 import { Role } from '@prisma/client';
+import { ICourier } from './interfaces/courier.interface';
 import { UpdateCourierDto } from './dtos/update-courier.dto';
+import { CreateCourierDto } from './dtos/create-courier.dto';
+import { CourierService } from './courier.service';
 
 @Controller('couriers')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -24,7 +24,7 @@ export class CourierController {
   constructor(private readonly courierService: CourierService) {}
 
   @Post()
-  create(@Body() dto: CreateCourierDto): Promise<ICourier> {
+  create(@Body() dto:CreateCourierDto): Promise<ICourier> {
     return this.courierService.create(dto);
   }
 

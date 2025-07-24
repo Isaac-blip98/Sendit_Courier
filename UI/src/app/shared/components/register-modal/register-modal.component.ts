@@ -4,6 +4,7 @@ import { ModalService } from '../../services/modal.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   standalone: true,
@@ -13,14 +14,17 @@ import { FormsModule } from '@angular/forms';
 })
 export class RegisterModalComponent implements OnInit {
   visible$!: Observable<boolean>;
+  name = '';
   email = '';
   phone = '';
   password = '';
   confirmPassword = '';
+  registerError = '';
 
   constructor(
     public modalService: ModalService,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -28,6 +32,7 @@ export class RegisterModalComponent implements OnInit {
   }
 
   close() {
+    this.registerError = '';
     this.modalService.closeAll();
   }
 
@@ -37,8 +42,30 @@ export class RegisterModalComponent implements OnInit {
   }
 
   handleRegister() {
-    // For mock purposes, we'll just log in the user as a customer
-    this.authService.login(this.email, 'customer');
-    this.modalService.closeAll();
+    if (this.password !== this.confirmPassword) {
+      this.registerError = 'Passwords do not match';
+      return;
+    }
+
+    this.authService
+      .register({
+        name: this.name,
+        email: this.email,
+        phone: this.phone,
+        password: this.password,
+      })
+      .subscribe({
+        next: () => {
+          this.registerError = '';
+          this.alertService.showSuccess(
+            'Registration successful! Please login.'
+          );
+          this.modalService.openLogin(); 
+        },
+        error: (err) => {
+          this.registerError = err.error?.message || 'Registration failed';
+          this.alertService.showError(this.registerError);
+        },
+      });
   }
 }

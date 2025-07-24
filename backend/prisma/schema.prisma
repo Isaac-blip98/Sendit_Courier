@@ -21,12 +21,15 @@ model User {
   phone            String
   role             Role      @default(CUSTOMER)
   profileImage     String?   
+  resetCode        String?         // <-- Added
+  resetCodeExpires DateTime?       // <-- Added
   sentParcels      Parcel[]  @relation("SentParcels")
   receivedParcels  Parcel[]  @relation("ReceivedParcels")
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   deletedAt        DateTime?
 }
+
 
 
 model Courier {

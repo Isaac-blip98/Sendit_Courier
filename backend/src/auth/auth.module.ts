@@ -5,9 +5,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from '../prisma/prisma.module';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
+import { AppMailerModule } from 'src/mailer/mailer.module';
 
 @Module({
   imports: [
+    AppMailerModule,
     ConfigModule,
     PrismaModule,
     JwtModule.register({
