@@ -16,6 +16,8 @@ export class LoginModalComponent implements OnInit {
   email = '';
   password = '';
 
+  loginError: string | null = null;
+
   constructor(
     public modalService: ModalService,
     private authService: AuthService
@@ -26,20 +28,25 @@ export class LoginModalComponent implements OnInit {
   }
 
   close() {
+    this.loginError = null; 
     this.modalService.closeAll();
   }
 
   switchToRegister(event: Event) {
     event.preventDefault();
+    this.loginError = null; 
     this.modalService.openRegister();
   }
 
   handleLogin() {
-    if (this.email === 'admin@sendit.com') {
-      this.authService.login(this.email, 'admin');
-    } else {
-      this.authService.login(this.email, 'customer');
-    }
-    this.modalService.closeAll();
+    this.loginError = null; 
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
+        this.modalService.closeAll();
+      },
+      error: (err) => {
+        this.loginError = err.error?.message || 'Login failed. Please try again.';
+      },
+    });
   }
 }

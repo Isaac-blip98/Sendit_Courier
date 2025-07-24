@@ -1,0 +1,23 @@
+<div
+  *ngIf="isVisible"
+  class="p-4 rounded-md shadow-md mb-4 flex items-start gap-3"
+  [ngClass]="{
+    'bg-green-100 text-green-800': type === 'success',
+    'bg-red-100 text-red-800': type === 'error'
+  }"
+>
+  <span>
+    <ng-container *ngIf="type === 'success'">✅</ng-container>
+    <ng-container *ngIf="type === 'error'">❌</ng-container>
+  </span>
+  <div class="flex-1">
+    {{ message }}
+  </div>
+  <button
+    *ngIf="dismissible"
+    class="ml-4 text-sm"
+    (click)="close()"
+  >
+    ✖
+  </button>
+</div>

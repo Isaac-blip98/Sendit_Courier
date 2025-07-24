@@ -4,10 +4,11 @@ import { LoginModalComponent } from './shared/components/login-modal/login-modal
 import { RegisterModalComponent } from './shared/components/register-modal/register-modal.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
+import { AlertComponent } from './shared/alert/alert.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LoginModalComponent, RegisterModalComponent, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, LoginModalComponent, RegisterModalComponent, HeaderComponent, FooterComponent, AlertComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
