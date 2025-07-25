@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 export interface User {
   email: string;
   role: 'admin' | 'customer';
+  name?: string;
 }
 
 @Injectable({
@@ -38,8 +39,28 @@ export class AuthService {
         tap((res) => {
           const { access_token, user } = res;
           localStorage.setItem('access_token', access_token);
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUserSubject.next(user);
+          let userObj = user;
+          if (!userObj && access_token) {
+            try {
+              const decoded: any = jwtDecode(access_token);
+              userObj = {
+                email: decoded.email,
+                role: decoded.role ? decoded.role.toLowerCase() : undefined,
+                name: decoded.name,
+              };
+            } catch (e) {
+              userObj = null;
+            }
+          }
+          if (userObj && userObj.role) {
+            userObj.role = userObj.role.toLowerCase();
+          }
+          if (userObj) {
+            localStorage.setItem('user', JSON.stringify(userObj));
+          } else {
+            localStorage.removeItem('user');
+          }
+          this.currentUserSubject.next(userObj);
         })
       );
   }
@@ -57,7 +78,8 @@ export class AuthService {
 
         const user = {
           email: decoded.email,
-          role: decoded.role,
+          role: decoded.role ? decoded.role.toLowerCase() : undefined,
+          name: decoded.name,
         };
 
         localStorage.setItem('access_token', access_token);

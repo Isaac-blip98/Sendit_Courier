@@ -3,15 +3,15 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="bg-white rounded-xl shadow p-6 flex flex-col items-start">
       <div class="text-gray-500 text-sm mb-2">Total Users</div>
-      <div class="text-3xl font-bold text-blue-900 mb-1">89</div>
+      <div class="text-3xl font-bold text-blue-900 mb-1">{{ stats?.totalUsers ?? '...' }}</div>
     </div>
     <div class="bg-white rounded-xl shadow p-6 flex flex-col items-start">
       <div class="text-gray-500 text-sm mb-2">Total Parcels</div>
-      <div class="text-3xl font-bold text-blue-900 mb-1">129</div>
+      <div class="text-3xl font-bold text-blue-900 mb-1">{{ stats?.totalParcels ?? '...' }}</div>
     </div>
     <div class="bg-white rounded-xl shadow p-6 flex flex-col items-start">
       <div class="text-gray-500 text-sm mb-2">Total Pending</div>
-      <div class="text-3xl font-bold text-blue-900 mb-1">20</div>
+      <div class="text-3xl font-bold text-blue-900 mb-1">{{ stats?.totalPending ?? '...' }}</div>
     </div>
   </div>
 
@@ -27,20 +27,22 @@
       <table class="min-w-full">
         <thead>
           <tr class="bg-blue-50 text-blue-900">
-            <th class="px-4 py-2 text-left text-xs font-semibold">Parcel  Number</th>
+            <th class="px-4 py-2 text-left text-xs font-semibold">Parcel Number</th>
             <th class="px-4 py-2 text-left text-xs font-semibold">Date</th>
-            <th class="px-4 py-2 text-left text-xs font-semibold">Customer</th>
             <th class="px-4 py-2 text-left text-xs font-semibold">Time</th>
+            <th class="px-4 py-2 text-left text-xs font-semibold">Customer</th>
             <th class="px-4 py-2 text-left text-xs font-semibold">Destination</th>
             <th class="px-4 py-2 text-left text-xs font-semibold">Pick up Location</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let parcel of filteredParcels" class="border-b">
-            <td class="px-4 py-2 text-blue-700 font-medium">{{ parcel.orderNumber }}</td>
+            <td class="px-4 py-2 text-blue-700 font-medium">
+              {{ parcel.orderNumber.slice(0, 6) + '...' + parcel.orderNumber.slice(-4) }}
+            </td>
             <td class="px-4 py-2">{{ parcel.date }}</td>
-            <td class="px-4 py-2">{{ parcel.customer }}</td>
             <td class="px-4 py-2">{{ parcel.time }}</td>
+            <td class="px-4 py-2">{{ parcel.customer }}</td>
             <td class="px-4 py-2">{{ parcel.destination }}</td>
             <td class="px-4 py-2">{{ parcel.pickupLocation }}</td>
           </tr>

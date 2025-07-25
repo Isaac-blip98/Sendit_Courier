@@ -1,14 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface Parcel {
-  id: string;
-  address: string;
-  date: string;
-  weight: string;
-  status: 'Completed' | 'Picked' | 'In Transit' | 'Cancelled';
-}
+import { AdminParcel } from '../../../shared/services/admin.service';
 
 @Component({
   selector: 'app-edit-parcel-modal',
@@ -18,9 +11,9 @@ interface Parcel {
 })
 export class EditParcelModalComponent {
   @Input() visible = false;
-  @Input() parcel!: Parcel;
+  @Input() parcel!: AdminParcel;
   @Output() closeEvent = new EventEmitter<void>();
-  @Output() saveEvent = new EventEmitter<Parcel>();
+  @Output() saveEvent = new EventEmitter<AdminParcel>();
 
   save() {
     this.saveEvent.emit(this.parcel);

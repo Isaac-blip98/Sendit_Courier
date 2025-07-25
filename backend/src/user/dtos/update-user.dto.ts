@@ -16,4 +16,7 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   profileImage?: string;
+
+  @IsOptional()
+  deletedAt?: Date | null;
 }

@@ -35,21 +35,21 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of filteredParcels" class="border-b">
-            <td class="px-4 py-2 text-blue-700 font-medium">{{ row.id }}</td>
-            <td class="px-4 py-2">{{ row.address }}</td>
-            <td class="px-4 py-2">{{ row.date }}</td>
-            <td class="px-4 py-2">{{ row.weight }}</td>
+            <td class="px-4 py-2 text-blue-700 font-medium">{{ row.id.slice(0, 6) + '...' + row.id.slice(-4) }}</td>
+            <td class="px-4 py-2">{{ row.pickupAddress }}</td>
+            <td class="px-4 py-2">{{ row.createdAt | date:'mediumDate' }}</td>
+            <td class="px-4 py-2">{{ row.weightCategory }}</td>
             <td class="px-4 py-2">
               <div class="relative inline-block w-32">
-                <select [(ngModel)]="row.status" (ngModelChange)="onStatusChange(row.id, row.status)"
+                <select [(ngModel)]="row.status" (ngModelChange)="onStatusChange(row.id, row.status || '')"
                         class="w-full appearance-none rounded-full px-3 py-1 text-xs font-semibold"
                         [ngClass]="{
-                          'bg-green-50 text-green-600': row.status === 'Completed',
-                          'bg-blue-50 text-blue-700': row.status === 'Picked',
-                          'bg-orange-50 text-orange-600': row.status === 'In Transit',
-                          'bg-red-50 text-red-600': row.status === 'Cancelled'
+                          'bg-green-50 text-green-600': row.status === 'COMPLETED',
+                          'bg-blue-50 text-blue-700': row.status === 'PICKED',
+                          'bg-orange-50 text-orange-600': row.status === 'IN_TRANSIT',
+                          'bg-red-50 text-red-600': row.status === 'CANCELLED'
                         }">
-                  <option *ngFor="let status of ['Completed', 'Picked', 'In Transit', 'Cancelled']" [value]="status">
+                  <option *ngFor="let status of ['COMPLETED', 'PICKED', 'IN_TRANSIT', 'CANCELLED']" [value]="status">
                     {{ status }}
                   </option>
                 </select>

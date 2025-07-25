@@ -9,5 +9,6 @@ import { AppMailerModule } from 'src/mailer/mailer.module';
   imports: [PrismaModule, CommonModule, AppMailerModule],
   providers: [ParcelService],
   controllers: [ParcelController],
+  exports: [ParcelService]
 })
 export class ParcelModule {}
