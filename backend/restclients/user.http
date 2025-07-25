@@ -11,7 +11,6 @@ Content-Type: application/json
 {
   "name": "Jane Doe",
   "phone": "0700000000",
-  "profileImage": "https://cdn.example.com/profile.jpg"
 }
 
 ### Soft delete user
