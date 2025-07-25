@@ -4,6 +4,7 @@ import { ModalService } from '../../services/modal.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -20,7 +21,8 @@ export class LoginModalComponent implements OnInit {
 
   constructor(
     public modalService: ModalService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +44,15 @@ export class LoginModalComponent implements OnInit {
     this.loginError = null; 
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        this.modalService.closeAll();
+        setTimeout(() => {
+          this.modalService.closeAll();
+          const user = this.authService.getCurrentUser();
+          if (user?.role === 'admin') {
+            this.router.navigate(['/admin']);
+          } else if (user?.role === 'customer') {
+            this.router.navigate(['/dashboard']);
+          }
+        }, 1000); // Close modal after 1 second
       },
       error: (err) => {
         this.loginError = err.error?.message || 'Login failed. Please try again.';

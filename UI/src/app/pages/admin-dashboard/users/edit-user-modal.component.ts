@@ -1,15 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  avatar: string;
-  joinedDate: string;
-  status: 'active' | 'inactive';
-}
+import { AdminUser } from '../../../shared/services/admin.service';
 
 @Component({
   selector: 'app-edit-user-modal',
@@ -19,9 +11,9 @@ interface User {
 })
 export class EditUserModalComponent {
   @Input() visible = false;
-  @Input() user!: User;
+  @Input() user!: AdminUser;
   @Output() closeEvent = new EventEmitter<void>();
-  @Output() saveEvent = new EventEmitter<User>();
+  @Output() saveEvent = new EventEmitter<AdminUser>();
 
   save() {
     this.saveEvent.emit(this.user);

@@ -10,66 +10,86 @@
         <span class="text-xl font-bold text-gray-800">SwiftCourier</span>
       </div>
       <div class="hidden md:flex items-center space-x-8">
-        <a
-          href="#"
-          class="text-gray-700 hover:text-purple-600 transition-colors"
-          >Home</a
-        >
-        <a
-          href="#track"
-          class="text-gray-700 hover:text-purple-600 transition-colors"
-          >Track Order</a
-        >
-        <a
-          [routerLink]="['/about']"
-          class="text-gray-700 hover:text-purple-600 transition-colors"
-          >About Us</a
-        >
-
-        <div class="relative inline-block text-left">
-          <ng-container *ngIf="currentUser$ | async as user; else loggedOut">
-            <div
-              class="flex items-center space-x-2 cursor-pointer"
-              (click)="toggleDropdown()"
+        <ng-container *ngIf="currentUser$ | async as user; else showLinksLoggedOut">
+          <ng-container *ngIf="user.role !== 'admin'; else adminLinks">
+            <a
+              href="#"
+              class="text-gray-700 hover:text-purple-600 transition-colors"
+              >Home</a
             >
-              <div
-                class="flex justify-center items-center w-10 h-10 rounded-full bg-gray-200 text-gray-700 font-bold text-lg"
-              >
-                {{ user.email.charAt(0).toUpperCase() }}
-              </div>
-              <i class="fas fa-chevron-down text-gray-600"></i>
-            </div>
-            <div
-              *ngIf="isDropdownOpen"
-              class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+            <a
+              href="#track"
+              class="text-gray-700 hover:text-purple-600 transition-colors"
+              >Track Order</a
             >
-              <div
-                class="py-1"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="options-menu"
-              >
-                <a
-                  [routerLink]="user.role === 'admin' ? '/admin' : '/dashboard'"
-                  (click)="toggleDropdown()"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  role="menuitem"
-                  >Dashboard</a
-                >
-                <p class="px-4 py-2 text-sm text-gray-500">{{ user.email }}</p>
-                <a
-                  (click)="logout()"
-                  href="#"
-                  class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  role="menuitem"
-                >
-                  Logout
-                </a>
-              </div>
-            </div>
+            <a
+              [routerLink]="['/about']"
+              class="text-gray-700 hover:text-purple-600 transition-colors"
+              >About Us</a
+            >
           </ng-container>
-        </div>
-        <ng-template #loggedOut>
+          <ng-template #adminLinks></ng-template>
+          <div class="relative inline-block text-left flex items-center">
+            <ng-container>
+              <span *ngIf="user.role === 'admin' && user.name" class="mr-2 font-semibold text-gray-700">{{ user.name }}</span>
+              <div
+                class="flex items-center space-x-2 cursor-pointer"
+                (click)="toggleDropdown()"
+              >
+                <div
+                  class="flex justify-center items-center w-10 h-10 rounded-full bg-gray-200 text-gray-700 font-bold text-lg"
+                >
+                  {{ user.email.charAt(0).toUpperCase() }}
+                </div>
+                <i class="fas fa-chevron-down text-gray-600"></i>
+              </div>
+              <div
+                *ngIf="isDropdownOpen"
+                class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+              >
+                <div
+                  class="py-1"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="options-menu"
+                >
+                  <a
+                    [routerLink]="user.role === 'admin' ? '/admin' : '/dashboard'"
+                    (click)="toggleDropdown()"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    >Dashboard</a
+                  >
+                  <p class="px-4 py-2 text-sm text-gray-500">{{ user.email }}</p>
+                  <a
+                    (click)="logout()"
+                    href="#"
+                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                  >
+                    Logout
+                  </a>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+        <ng-template #showLinksLoggedOut>
+          <a
+            href="#"
+            class="text-gray-700 hover:text-purple-600 transition-colors"
+            >Home</a
+          >
+          <a
+            href="#track"
+            class="text-gray-700 hover:text-purple-600 transition-colors"
+            >Track Order</a
+          >
+          <a
+            [routerLink]="['/about']"
+            class="text-gray-700 hover:text-purple-600 transition-colors"
+            >About Us</a
+          >
           <div class="flex items-center space-x-4">
             <button
               class="text-gray-700 hover:text-purple-600"
