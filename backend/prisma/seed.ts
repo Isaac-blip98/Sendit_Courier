@@ -10,8 +10,8 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Hash passwords
-  const adminPassword = await bcrypt.hash('elvis123', 10); // ← update your new admin password here
+
+  const adminPassword = await bcrypt.hash('elvis123', 10); 
   const user1Password = await bcrypt.hash('customer1', 10);
   const user2Password = await bcrypt.hash('customer2', 10);
 
@@ -21,7 +21,7 @@ async function main() {
 
   // Create or update admin
   const admin = await prisma.user.upsert({
-    where: { email: 'ndiranguelvis97@gmail.com' }, // ← NEW EMAIL
+    where: { email: 'ndiranguelvis97@gmail.com' },
     update: {
       name: 'Elvis',
       phone: '0794130919',

@@ -13,7 +13,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Always clone with credentials
   req = req.clone({
-    withCredentials: true, // ✅ send cookies and headers for CORS
+    withCredentials: true, 
     setHeaders: token
       ? { Authorization: `Bearer ${token}` }
       : {},
