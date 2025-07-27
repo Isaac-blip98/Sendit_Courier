@@ -59,4 +59,16 @@ export class ParcelController {
   assignCourier(@Body() dto: AssignCourierDto): Promise<IParcel> {
     return this.parcelService.assignCourier(dto.parcelId, dto.courierId);
   }
+
+  @Get('user/:userId/all')
+  @Roles(Role.CUSTOMER)
+  findAllByUser(@Param('userId') userId: string): Promise<IParcel[]> {
+    return this.parcelService.findAllByUser(userId);
+  }
+
+  @Get('user/:userId/stats')
+  @Roles(Role.CUSTOMER)
+  getParcelStats(@Param('userId') userId: string): Promise<any> {
+    return this.parcelService.getParcelStats(userId);
+  }
 }

@@ -45,7 +45,36 @@ export class ParcelService {
   }
 
   async findOne(id: string): Promise<IParcel> {
-    const parcel = await this.prisma.parcel.findUnique({ where: { id } });
+    const parcel = await this.prisma.parcel.findUnique({
+      where: { id },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+        receiver: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+        assignedCourier: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+            email: true,
+          },
+        },
+      },
+    });
+
     if (!parcel || parcel.deletedAt) {
       throw new NotFoundException('Parcel not found');
     }
@@ -106,5 +135,79 @@ export class ParcelService {
     }
 
     return updatedParcel;
+  }
+
+  async findAllByUser(userId: string): Promise<IParcel[]> {
+    return this.prisma.parcel.findMany({
+      where: {
+        OR: [{ senderId: userId }, { receiverId: userId }],
+        deletedAt: null,
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+        receiver: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+        assignedCourier: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async getParcelStats(userId: string): Promise<{
+    totalParcels: number;
+    totalSent: number;
+    totalReceived: number;
+    statusCounts: {
+      pending: number;
+      inTransit: number;
+      delivered: number;
+      cancelled: number;
+    };
+  }> {
+    const [sentParcels, receivedParcels] = await Promise.all([
+      this.prisma.parcel.findMany({
+        where: { senderId: userId, deletedAt: null },
+        select: { status: true },
+      }),
+      this.prisma.parcel.findMany({
+        where: { receiverId: userId, deletedAt: null },
+        select: { status: true },
+      }),
+    ]);
+
+    const allParcels = [...sentParcels, ...receivedParcels];
+
+    return {
+      totalParcels: allParcels.length,
+      totalSent: sentParcels.length,
+      totalReceived: receivedParcels.length,
+      statusCounts: {
+        pending: allParcels.filter((p) => p.status === 'PENDING').length,
+        inTransit: allParcels.filter((p) => p.status === 'IN_TRANSIT').length,
+        delivered: allParcels.filter((p) => p.status === 'DELIVERED').length,
+        cancelled: allParcels.filter((p) => p.status === 'CANCELLED').length,
+      },
+    };
   }
 }
