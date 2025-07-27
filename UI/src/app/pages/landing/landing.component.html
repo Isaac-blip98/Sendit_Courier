@@ -20,7 +20,7 @@
       </div>
       <div class="relative">
         <img
-          src="assets/Parcel-delivery.jpg"
+          src="assets/Landing.jpg"
           alt="Courier delivery"
           class="rounded-2xl shadow-lg w-full object-cover max-h-96 mx-auto"
         />
@@ -28,8 +28,8 @@
     </div>
 
     <!-- Features Card -->
-    <div class="bg-white rounded-2xl shadow-lg p-8">
-      <div class="grid md:grid-cols-3 gap-8">
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl shadow-lg p-8">
         <div class="flex items-center gap-4">
           <div
             class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
@@ -41,22 +41,26 @@
             <p class="text-sm text-gray-600">We ensure punctual delivery</p>
           </div>
         </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-8">
         <div class="flex items-center gap-4">
           <div
-            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+            class="w-12 h-12 bg-green-300 rounded-full flex items-center justify-center"
           >
-            <i class="fas fa-truck text-blue-600"></i>
+            <i class="fas fa-truck text-green-600"></i>
           </div>
           <div>
             <h3 class="font-semibold text-gray-800">Fast home delivery</h3>
             <p class="text-sm text-gray-600">Quick doorstep service</p>
           </div>
         </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-8">
         <div class="flex items-center gap-4">
           <div
-            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+            class="w-12 h-12 bg-purple-300 rounded-full flex items-center justify-center"
           >
-            <i class="fas fa-shield-alt text-blue-600"></i>
+            <i class="fas fa-shield-alt text-purple-600"></i>
           </div>
           <div>
             <h3 class="font-semibold text-gray-800">We are your product</h3>
@@ -173,12 +177,13 @@
             <span class="text-gray-700">Accessories</span>
           </li>
         </ul>
-        <a
+        <button
           [routerLink]="['/about']"
           fragment="business"
-          class="text-purple-600 underline"
-          >Learn More</a
+          class="bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center gap-2"
         >
+          Learn More
+        </button>
       </div>
 
       <!-- Household Plan -->
@@ -186,9 +191,9 @@
         class="bg-white rounded-2xl p-8 shadow-lg card-hover border border-gray-100"
       >
         <div
-          class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto"
+          class="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mb-6 mx-auto"
         >
-          <i class="fas fa-home text-blue-500 text-2xl"></i>
+          <i class="fas fa-home text-green-500 text-2xl"></i>
         </div>
         <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">
           For Household
@@ -211,12 +216,13 @@
             <span class="text-gray-700">Documents</span>
           </li>
         </ul>
-        <a
+        <button
           [routerLink]="['/about']"
           fragment="business"
-          class="text-purple-600 underline"
-          >Learn More</a
+          class="bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center gap-2"
         >
+          Learn More
+        </button>
       </div>
 
       <!-- Personal Plan -->
@@ -224,9 +230,9 @@
         class="bg-white rounded-2xl p-8 shadow-lg card-hover border border-gray-100"
       >
         <div
-          class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto"
+          class="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center mb-6 mx-auto"
         >
-          <i class="fas fa-user text-blue-500 text-2xl"></i>
+          <i class="fas fa-user text-purple-500 text-2xl"></i>
         </div>
         <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">
           For Personal
@@ -249,12 +255,13 @@
             <span class="text-gray-700">Documents</span>
           </li>
         </ul>
-        <a
+        <button
           [routerLink]="['/about']"
           fragment="business"
-          class="text-purple-600 underline"
-          >Learn More</a
+          class="bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center gap-2"
         >
+          Learn More
+        </button>
       </div>
     </div>
   </div>

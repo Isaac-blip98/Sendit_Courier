@@ -38,3 +38,39 @@
 .shadow-lg {
   box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
 }
+
+// Ensure the map container has proper dimensions
+.map-container {
+  width: 100%;
+  height: 320px; 
+  min-height: 320px;
+  position: relative;
+  background-color: #f3f4f6; 
+  border-radius: 0.75rem; 
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); 
+}
+
+:host ::ng-deep {
+  .leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0.75rem;
+  }
+  
+  .leaflet-control-container {
+    font-family: inherit;
+  }
+  
+  // Ensure map tiles load properly
+  .leaflet-tile-pane {
+    z-index: 1;
+  }
+  
+  .leaflet-marker-pane {
+    z-index: 2;
+  }
+  
+  .leaflet-popup-pane {
+    z-index: 3;
+  }
+}

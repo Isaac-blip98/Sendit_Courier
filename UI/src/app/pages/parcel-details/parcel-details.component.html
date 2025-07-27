@@ -1,95 +1,311 @@
 <div class="min-h-screen bg-[#f4f8fd] flex flex-col">
-  <!-- Header (optional, if you want to add navigation) -->
   <main class="flex-1 w-full max-w-5xl mx-auto px-4 pb-12">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6 mt-8">Track Your Parcel</h1>
-    <!-- Map Section -->
-    <section class="w-full mb-8">
-      <img src="assets/map-placeholder.png" alt="Map" class="w-full h-80 object-cover rounded-xl shadow" />
-    </section>
-    <!-- Progress Bar (Route Visualization) -->
-    <section class="mb-8">
-      <div class="flex flex-col items-center w-full">
-        <div class="flex items-center w-full max-w-2xl mx-auto">
-          <ng-container *ngFor="let status of statuses; let i = index">
-            <div class="flex flex-col items-center w-full">
-              <span [ngClass]="{
-                'text-blue-800 font-bold': i <= currentStatusIndex,
-                'text-gray-400 font-bold': i > currentStatusIndex
-              }" class="mb-2 text-lg tracking-wide uppercase">{{ status.label }}</span>
-              <div class="flex items-center w-full">
-                <!-- Left connector -->
-                <div *ngIf="i !== 0" [ngClass]="{
-                  'bg-blue-800': i <= currentStatusIndex,
-                  'bg-gray-200': i > currentStatusIndex
-                }" class="h-2 flex-grow"></div>
-                <!-- Step circle -->
-                <div [ngClass]="{
-                  'border-blue-800': i <= currentStatusIndex,
-                  'border-gray-300': i > currentStatusIndex,
-                  'bg-blue-800 text-white': i < currentStatusIndex,
-                  'bg-white': i >= currentStatusIndex
-                }"
-                  class="w-12 h-12 rounded-full border-4 flex items-center justify-center text-2xl transition-all duration-300 z-10">
-                  <ng-container *ngIf="i < currentStatusIndex">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </ng-container>
-                </div>
-                <!-- Right connector -->
-                <div *ngIf="i !== statuses.length - 1" [ngClass]="{
-                  'bg-blue-800': i < currentStatusIndex,
-                  'bg-gray-200': i >= currentStatusIndex
-                }" class="h-2 flex-grow"></div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-6 mt-8">
+      Track Your Parcel
+    </h1>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
+      ></div>
+      <span class="ml-3 text-gray-600">Loading parcel details...</span>
+    </div>
+
+    <!-- Error State -->
+    <div
+      *ngIf="error && !loading"
+      class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6"
+    >
+      {{ error }}
+      <button
+        (click)="loadParcelDetails()"
+        class="ml-4 text-red-800 hover:text-red-900 font-medium"
+      >
+        Try Again
+      </button>
+    </div>
+
+    <!-- Content - Only show when parcel is loaded -->
+    <div *ngIf="parcel && !loading && !error">
+      <!-- Map Section -->
+      <section class="w-full mb-8">
+        <div class="relative">
+          <div #mapContainer class="map-container w-full h-80 rounded-xl shadow">
+            <!-- Map loading indicator -->
+            <div *ngIf="!mapInitialized" class="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
+              <div class="flex flex-col items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
+                <span class="text-sm text-gray-600">Loading map...</span>
               </div>
             </div>
-          </ng-container>
+          </div>
         </div>
-      </div>
-    </section>
-    <!-- Parcel Info Grid -->
-    <section class="grid grid-cols-2 gap-8 mb-8">
-      <div>
-        <p class="text-gray-500 text-sm">Parcel ID:</p>
-        <p class="font-semibold text-gray-800 text-lg">#SND-19504</p>
-      </div>
-      <div>
-        <p class="text-gray-500 text-sm">Status:</p>
-        <span class="status-badge status-transit">In Transit</span>
-      </div>
-      <div>
-        <p class="text-gray-500 text-sm">Sent On:</p>
-        <p class="font-semibold text-gray-800 text-lg">Jul 14, 2025</p>
-      </div>
-      <div>
-        <p class="text-gray-500 text-sm">Receiver:</p>
-        <p class="font-semibold text-gray-800 text-lg">John Doe</p>
-      </div>
-      <div>
-        <p class="text-gray-500 text-sm">Weight:</p>
-        <p class="font-semibold text-gray-800 text-lg">Medium</p>
-      </div>
-      <div>
-        <p class="text-gray-500 text-sm">Destination:</p>
-        <p class="font-semibold text-gray-800 text-lg">Makadara, Mombasa</p>
-      </div>
-    </section>
-    <!-- Notification -->
-    <section class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start space-x-3 mb-8">
-      <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </div>
-      <p class="text-blue-700 text-sm">You will receive an email/SMS once this parcel is delivered.</p>
-    </section>
+        <div class="text-xs text-gray-500 text-center mt-2">
+          From {{ parcel.pickupAddress }} to {{ parcel.destination }}
+        </div>
+      </section>
+
+      <!-- Progress Bar (Route Visualization) - Only show if not cancelled -->
+      <section class="mb-8" *ngIf="parcel.status !== 'CANCELLED'">
+        <div class="flex flex-col items-center w-full">
+          <div class="flex items-center w-full max-w-2xl mx-auto">
+            <ng-container *ngFor="let status of statuses; let i = index">
+              <div class="flex flex-col items-center w-full">
+                <span
+                  [ngClass]="{
+                    'text-blue-800 font-bold': i <= currentStatusIndex,
+                    'text-gray-400 font-bold': i > currentStatusIndex
+                  }"
+                  class="mb-2 text-lg tracking-wide uppercase"
+                  >{{ status.label }}</span
+                >
+                <div class="flex items-center w-full">
+                  <!-- Left connector -->
+                  <div
+                    *ngIf="i !== 0"
+                    [ngClass]="{
+                      'bg-blue-800': i <= currentStatusIndex,
+                      'bg-gray-200': i > currentStatusIndex
+                    }"
+                    class="h-2 flex-grow"
+                  ></div>
+                  <!-- Step circle -->
+                  <div
+                    [ngClass]="{
+                      'border-blue-800': i <= currentStatusIndex,
+                      'border-gray-300': i > currentStatusIndex,
+                      'bg-blue-800 text-white': i < currentStatusIndex,
+                      'bg-white': i >= currentStatusIndex
+                    }"
+                    class="w-12 h-12 rounded-full border-4 flex items-center justify-center text-2xl transition-all duration-300 z-10"
+                  >
+                    <ng-container *ngIf="i < currentStatusIndex">
+                      <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="3"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </ng-container>
+                    <ng-container *ngIf="i === currentStatusIndex">
+                      <div class="w-3 h-3 bg-blue-800 rounded-full"></div>
+                    </ng-container>
+                  </div>
+                  <!-- Right connector -->
+                  <div
+                    *ngIf="i !== statuses.length - 1"
+                    [ngClass]="{
+                      'bg-blue-800': i < currentStatusIndex,
+                      'bg-gray-200': i >= currentStatusIndex
+                    }"
+                    class="h-2 flex-grow"
+                  ></div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cancelled Status Alert -->
+      <section *ngIf="parcel.status === 'CANCELLED'" class="mb-8">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+          <svg
+            class="w-16 h-16 text-red-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+          <h3 class="text-lg font-semibold text-red-800 mb-2">
+            Parcel Cancelled
+          </h3>
+          <p class="text-red-600">
+            This parcel delivery has been cancelled. Please contact support for
+            more information.
+          </p>
+        </div>
+      </section>
+
+      <!-- Parcel Info Grid -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+          <p class="text-gray-500 text-sm mb-1">Parcel ID:</p>
+          <div class="flex items-center space-x-2">
+            <p class="font-semibold text-gray-800 text-lg">
+              {{ getDisplayId(parcel.id) }}
+            </p>
+            <button
+              (click)="copyParcelId()"
+              class="text-blue-600 hover:text-blue-800 text-xs"
+              title="Copy full ID"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+          <p class="text-gray-500 text-sm mb-1">Status:</p>
+          <span [ngClass]="getStatusBadgeClass(parcel.status)">
+            {{ getDisplayStatus(parcel.status) }}
+          </span>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+          <p class="text-gray-500 text-sm mb-1">Sent On:</p>
+          <p class="font-semibold text-gray-800 text-lg">
+            {{ parcel.createdAt | date : "mediumDate" }}
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+          <p class="text-gray-500 text-sm mb-1">Weight Category:</p>
+          <p class="font-semibold text-gray-800 text-lg">
+            {{ formatWeight(parcel.weightCategory) }}
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+          <p class="text-gray-500 text-sm mb-1">Pickup Address:</p>
+          <p class="font-semibold text-gray-800 text-base break-words">
+            {{ parcel.pickupAddress }}
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+          <p class="text-gray-500 text-sm mb-1">Destination:</p>
+          <p class="font-semibold text-gray-800 text-base break-words">
+            {{ parcel.destination }}
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+          <p class="text-gray-500 text-sm mb-1">Receiver Name:</p>
+          <p class="font-semibold text-gray-800 text-lg">
+            {{ parcel.receiverName }}
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+          <p class="text-gray-500 text-sm mb-1">Receiver Phone:</p>
+          <p class="font-semibold text-gray-800 text-lg">
+            {{ parcel.receiverPhone }}
+          </p>
+        </div>
+      </section>
+
+      <!-- Courier Information (if assigned) -->
+      <section
+        *ngIf="parcel.assignedCourierId"
+        class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8"
+      >
+        <div class="flex items-start space-x-3">
+          <div
+            class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+          >
+            <svg
+              class="w-3 h-3 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+          </div>
+          <div>
+            <p class="text-blue-800 font-semibold text-sm">Courier Assigned</p>
+            <p class="text-blue-700 text-sm">
+              A courier has been assigned to handle your parcel delivery.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notification -->
+      <section
+        class="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start space-x-3 mb-8"
+      >
+        <div
+          class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+        >
+          <svg
+            class="w-3 h-3 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <p class="text-green-700 text-sm">
+          You will receive an email/SMS notification once this parcel status
+          changes.
+        </p>
+      </section>
+
+      <!-- Last Updated -->
+      <section class="text-center text-gray-500 text-sm mb-8">
+        <p>Last updated: {{ parcel.updatedAt | date : "medium" }}</p>
+      </section>
+    </div>
+
     <!-- Back Button -->
     <div class="pt-2">
-      <button (click)="goBack()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      <button
+        (click)="goBack()"
+        class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
         </svg>
-        <span>Back</span>
+        <span>Back to Dashboard</span>
       </button>
     </div>
   </main>

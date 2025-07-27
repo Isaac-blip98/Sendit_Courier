@@ -5,13 +5,27 @@
     <p class="text-gray-600">View your sent and incoming parcels</p>
   </div>
 
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <span class="ml-3 text-gray-600">Loading parcels...</span>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+    {{ error }}
+    <button (click)="loadParcels()" class="ml-4 text-red-800 hover:text-red-900 font-medium">
+      Try Again
+    </button>
+  </div>
+
   <!-- Statistics Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="metric-card rounded-xl p-6 shadow-lg">
+  <div *ngIf="!loading && !error" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="metric-card rounded-xl p-6 shadow-lg bg-gradient-to-r from-blue-500 to-blue-600">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-blue-100 text-sm font-medium">Total Parcels</p>
-          <p class="text-3xl font-bold text-white mt-1">10</p>
+          <p class="text-3xl font-bold text-white mt-1">{{ stats.totalParcels }}</p>
         </div>
         <div class="bg-white bg-opacity-20 p-3 rounded-full">
           <svg
@@ -31,11 +45,11 @@
       </div>
     </div>
 
-    <div class="metric-card rounded-xl p-6 shadow-lg">
+    <div class="metric-card rounded-xl p-6 shadow-lg bg-gradient-to-r from-green-500 to-green-600">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-blue-100 text-sm font-medium">Total Parcels Sent</p>
-          <p class="text-3xl font-bold text-white mt-1">7</p>
+          <p class="text-green-100 text-sm font-medium">Total Parcels Sent</p>
+          <p class="text-3xl font-bold text-white mt-1">{{ stats.totalSent }}</p>
         </div>
         <div class="bg-white bg-opacity-20 p-3 rounded-full">
           <svg
@@ -55,13 +69,13 @@
       </div>
     </div>
 
-    <div class="metric-card rounded-xl p-6 shadow-lg">
+    <div class="metric-card rounded-xl p-6 shadow-lg bg-gradient-to-r from-purple-500 to-purple-600">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-blue-100 text-sm font-medium">
+          <p class="text-purple-100 text-sm font-medium">
             Total Parcels Received
           </p>
-          <p class="text-3xl font-bold text-white mt-1">3</p>
+          <p class="text-3xl font-bold text-white mt-1">{{ stats.totalReceived }}</p>
         </div>
         <div class="bg-white bg-opacity-20 p-3 rounded-full">
           <svg
@@ -83,391 +97,153 @@
   </div>
 
   <!-- Main Content -->
-  <div class="bg-white rounded-xl shadow-lg">
+  <div *ngIf="!loading && !error" class="bg-white rounded-xl shadow-lg">
     <div class="p-6 border-b border-gray-200">
       <h2 class="text-xl font-semibold text-gray-900 mb-2">Delivery History</h2>
       <p class="text-gray-600 text-sm">
         Track your package journey from pickup to delivery
       </p>
 
+      <!-- Tab Buttons -->
       <div class="flex space-x-4 mt-4">
         <button
-          id="sentTab"
-          class="tab-button bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 active"
-          onclick="switchTab('sent')"
+          [class]="getTabClass('sent')"
+          (click)="switchTab('sent')"
         >
           My package history
         </button>
         <button
-          id="receivedTab"
-          class="tab-button bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
-          onclick="switchTab('received')"
+          [class]="getTabClass('received')"
+          (click)="switchTab('received')"
         >
           Incoming Parcels
         </button>
       </div>
     </div>
     
-      <!-- Tabs and Search Bar (added) -->
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-blue-50 rounded-t-lg px-4 py-2 mt-4 mb-2">
-        <div class="flex space-x-4 overflow-x-auto">
-          <button class="text-blue-600 border-b-2 border-blue-600 font-semibold px-2 py-1 focus:outline-none">ALL (23)</button>
-          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">Ordered (0)</button>
-          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">Picked (1)</button>
-          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">In Transit (10)</button>
-          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">Completed (20)</button>
-          <button class="text-gray-500 hover:text-blue-600 px-2 py-1 focus:outline-none">Cancelled (2)</button>
-        </div>
-        <div class="mt-2 md:mt-0">
-          <input type="text" placeholder="Search by track id" class="border border-gray-300 rounded px-3 py-1 text-sm focus:ring-2 focus:ring-blue-200" />
-        </div>
+    <!-- Status Filters and Search Bar -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-blue-50 rounded-t-lg px-4 py-2 mt-4 mb-2">
+      <div class="flex space-x-4 overflow-x-auto">
+        <button 
+          [class]="getStatusButtonClass('all')"
+          (click)="switchStatus('all')"
+        >
+          ALL ({{ getCurrentViewStatusCounts().all }})
+        </button>
+        <button 
+          [class]="getStatusButtonClass('pending')"
+          (click)="switchStatus('pending')"
+        >
+          Pending ({{ getCurrentViewStatusCounts().pending }})
+        </button>
+        <button 
+          [class]="getStatusButtonClass('inTransit')"
+          (click)="switchStatus('inTransit')"
+        >
+          In Transit ({{ getCurrentViewStatusCounts().inTransit }})
+        </button>
+        <button 
+          [class]="getStatusButtonClass('delivered')"
+          (click)="switchStatus('delivered')"
+        >
+          Delivered ({{ getCurrentViewStatusCounts().delivered }})
+        </button>
+        <button 
+          [class]="getStatusButtonClass('cancelled')"
+          (click)="switchStatus('cancelled')"
+        >
+          Cancelled ({{ getCurrentViewStatusCounts().cancelled }})
+        </button>
       </div>
-      <!-- End Tabs and Search Bar -->
+      <div class="mt-2 md:mt-0">
+        <input 
+          type="text" 
+          placeholder="Search by track id, receiver, or location" 
+          class="border border-gray-300 rounded px-3 py-1 text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none" 
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+        />
+      </div>
+    </div>
 
     <!-- Table -->
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead class="bg-gray-50">
           <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Order ID
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Package
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {{ selectedView === 'sent' ? 'Receiver' : 'Sender' }}
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Date
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Location
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {{ selectedView === 'sent' ? 'From' : 'To' }}
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Weight
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Action
             </th>
           </tr>
         </thead>
-        <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
-          <!-- Sent packages data -->
-          <tr class="table-row sent-package">
-            <td
-              class="px-6 py-4 text-sm text-blue-600 font-medium whitespace-nowrap"
-            >
-              YB-001234
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr 
+            *ngFor="let parcel of filteredParcels; trackBy: trackByParcelId"
+            class="hover:bg-gray-50 transition-colors"
+          >
+            <td class="px-6 py-4 text-sm text-blue-600 font-medium whitespace-nowrap">
+              {{ parcel.id.substring(0, 8) }}...
             </td>
             <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
-              Package to John Doe
+              <div class="font-medium">{{ parcel.receiverName }}</div>
+              <div class="text-gray-500 text-xs">{{ parcel.receiverPhone }}</div>
             </td>
             <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-              Jul 17, 2024
+              {{ parcel.createdAt | date:'mediumDate' }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-transit">Out for delivery</span>
+              <span [class]="getStatusBadgeClass(parcel.status)">
+                {{ getDisplayStatus(parcel.status) }}
+              </span>
             </td>
             <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-              Oak Avenue
+              <div class="max-w-32 truncate" [title]="selectedView === 'sent' ? parcel.pickupAddress : parcel.destination">
+                {{ selectedView === 'sent' ? parcel.pickupAddress : parcel.destination }}
+              </div>
             </td>
             <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-              Medium
+              {{ formatWeight(parcel.weightCategory) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-001234']"
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                [routerLink]="['/parcel', parcel.id]"
               >
                 View Details
               </button>
             </td>
           </tr>
-          <tr class="table-row sent-package">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-001233
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Electronics package
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 16, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-delivered">Delivered</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Main Street
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Medium
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-001233']"
-              >
-                View Details
-              </button>
-            </td>
-          </tr>
-          <tr class="table-row sent-package">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-001232
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Document envelope
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 15, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-delivered">Delivered</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Commerce Drive
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Small
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-001232']"
-              >
-                View Details
-              </button>
-            </td>
-          </tr>
-          <tr class="table-row sent-package">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-001231
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Books package
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 14, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-processing">Processing</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Distribution Center
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Large
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-001231']"
-              >
-                View Details
-              </button>
-            </td>
-          </tr>
-          <tr class="table-row sent-package">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-001230
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Clothing package
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 13, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-delivered">Delivered</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Pine Street
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Medium
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-001230']"
-              >
-                View Details
-              </button>
-            </td>
-          </tr>
-          <tr class="table-row sent-package">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-001229
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Gift package
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 12, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-cancelled">Cancelled</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              --
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              --
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-001229']"
-              >
-                View Details
-              </button>
-            </td>
-          </tr>
-          <tr class="table-row sent-package">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-001228
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Medical supplies
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 11, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-delivered">Delivered</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Health Center
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Small
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-001228']"
-              >
-                View Details
-              </button>
-            </td>
-          </tr>
-
-          <!-- Received packages data (hidden by default) -->
-          <tr class="table-row received-package" style="display: none">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-002001
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Package from Alice Smith
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 16, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-delivered">Delivered</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Home Address
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Medium
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-002001']"
-              >
-                View Details
-              </button>
-            </td>
-          </tr>
-          <tr class="table-row received-package" style="display: none">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-002002
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Package from Bob Johnson
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 14, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-delivered">Delivered</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Home Address
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Large
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-002002']"
-              >
-                View Details
-              </button>
-            </td>
-          </tr>
-          <tr class="table-row received-package" style="display: none">
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium"
-            >
-              YB-002003
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              Package from Emma Davis
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Jul 12, 2024
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge status-transit">Out for delivery</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Distribution Center
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              Small
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <a
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                [routerLink]="['/parcel', 'YB-001234']"
-              >
-                View Details
-              </a>
+          
+          <!-- Empty state -->
+          <tr *ngIf="filteredParcels.length === 0">
+            <td colspan="7" class="px-6 py-8 text-center">
+              <div class="text-gray-500">
+                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2M4 13h2m0 0V9a2 2 0 012-2h2m-4 4v4m0-4h4m-4 0a2 2 0 012-2h2a2 2 0 012 2v4"/>
+                </svg>
+                <p class="text-sm font-medium">No parcels found</p>
+                <p class="text-xs text-gray-400 mt-1">
+                  {{ selectedView === 'sent' ? 'You haven\'t sent any parcels yet' : 'No incoming parcels found' }}
+                </p>
+              </div>
             </td>
           </tr>
         </tbody>

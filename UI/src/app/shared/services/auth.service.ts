@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 
 export interface User {
+  id: string;
   email: string;
   role: 'admin' | 'customer';
   name?: string;
@@ -44,6 +45,7 @@ export class AuthService {
             try {
               const decoded: any = jwtDecode(access_token);
               userObj = {
+                id: decoded.sub,
                 email: decoded.email,
                 role: decoded.role ? decoded.role.toLowerCase() : undefined,
                 name: decoded.name,
@@ -77,6 +79,7 @@ export class AuthService {
         const decoded: any = jwtDecode(access_token);
 
         const user = {
+          id: decoded.sub,
           email: decoded.email,
           role: decoded.role ? decoded.role.toLowerCase() : undefined,
           name: decoded.name,
@@ -102,5 +105,9 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('access_token');
+  }
+
+  getUser() {
+    return JSON.parse(localStorage.getItem('user') || 'null');
   }
 }
