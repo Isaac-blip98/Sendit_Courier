@@ -1,22 +1,39 @@
 <div class="space-y-6">
   <!-- Filter/Search Bar -->
-  <div class="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-2 md:space-y-0 mb-4">
-    <button class="px-4 py-2 rounded bg-gray-100 text-gray-700 font-medium">Filter By</button>
-    <select class="border border-gray-200 rounded px-3 py-2 text-sm" [(ngModel)]="weightFilter" (ngModelChange)="applyFilters()">
+  <div
+    class="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-2 md:space-y-0 mb-4"
+  >
+    <button class="px-4 py-2 rounded bg-gray-100 text-gray-700 font-medium">
+      Filter By
+    </button>
+    <select
+      class="border border-gray-200 rounded px-3 py-2 text-sm"
+      [(ngModel)]="weightFilter"
+      (ngModelChange)="applyFilters()"
+    >
       <option value="">Weight Category</option>
       <option>Light Parcel</option>
       <option>Medium Parcel</option>
       <option>Heavy Parcel</option>
       <option>Freight</option>
     </select>
-    <select class="border border-gray-200 rounded px-3 py-2 text-sm" [(ngModel)]="statusFilter" (ngModelChange)="applyFilters()">
+    <select
+      class="border border-gray-200 rounded px-3 py-2 text-sm"
+      [(ngModel)]="statusFilter"
+      (ngModelChange)="applyFilters()"
+    >
       <option value="">Delivery Status</option>
       <option>Completed</option>
       <option>Picked</option>
       <option>In Transit</option>
       <option>Cancelled</option>
     </select>
-    <button (click)="resetFilters()" class="px-4 py-2 rounded bg-red-50 text-red-600 font-medium">Reset Filter</button>
+    <button
+      (click)="resetFilters()"
+      class="px-4 py-2 rounded bg-red-50 text-red-600 font-medium"
+    >
+      Reset Filter
+    </button>
   </div>
 
   <!-- Parcels Table -->
@@ -35,35 +52,64 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of filteredParcels" class="border-b">
-            <td class="px-4 py-2 text-blue-700 font-medium">{{ row.id.slice(0, 6) + '...' + row.id.slice(-4) }}</td>
+            <td class="px-4 py-2 text-blue-700 font-medium">
+              {{ row.id.slice(0, 6) + '...' + row.id.slice(-4) }}
+            </td>
             <td class="px-4 py-2">{{ row.pickupAddress }}</td>
-            <td class="px-4 py-2">{{ row.createdAt | date:'mediumDate' }}</td>
+            <td class="px-4 py-2">{{ row.createdAt | date : 'mediumDate' }}</td>
             <td class="px-4 py-2">{{ row.weightCategory }}</td>
             <td class="px-4 py-2">
-              <div class="relative inline-block w-32">
-                <select [(ngModel)]="row.status" (ngModelChange)="onStatusChange(row.id, row.status || '')"
-                        class="w-full appearance-none rounded-full px-3 py-1 text-xs font-semibold"
-                        [ngClass]="{
-                          'bg-green-50 text-green-600': row.status === 'COMPLETED',
-                          'bg-blue-50 text-blue-700': row.status === 'PICKED',
-                          'bg-orange-50 text-orange-600': row.status === 'IN_TRANSIT',
-                          'bg-red-50 text-red-600': row.status === 'CANCELLED'
-                        }">
-                  <option *ngFor="let status of ['COMPLETED', 'PICKED', 'IN_TRANSIT', 'CANCELLED']" [value]="status">
-                    {{ status }}
-                  </option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+              <ng-container [ngSwitch]="row.status">
+                <!-- Editable dropdown only for PICKED or CANCELLED -->
+                <div *ngSwitchCase="'PICKED'" class="relative inline-block w-32">
+                  <select
+                    [(ngModel)]="row.status"
+                    (ngModelChange)="onStatusChange(row.id, row.status!)"
+                    class="w-full appearance-none rounded-full px-3 py-1 text-xs font-semibold bg-blue-50 text-blue-700"
+                  >
+                    <option value="PICKED">PICKED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                  </select>
                 </div>
-              </div>
+                <div *ngSwitchCase="'CANCELLED'" class="relative inline-block w-32">
+                  <select
+                    [(ngModel)]="row.status"
+                    (ngModelChange)="onStatusChange(row.id, row.status!)"
+                    class="w-full appearance-none rounded-full px-3 py-1 text-xs font-semibold bg-red-50 text-red-600"
+                  >
+                    <option value="PICKED">PICKED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                  </select>
+                </div>
+
+                <!-- Read-only badge for other statuses -->
+                <span
+                  *ngSwitchDefault
+                  class="inline-block rounded-full px-3 py-1 text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-gray-100 text-gray-600': row.status === 'PENDING',
+                    'bg-orange-50 text-orange-600': row.status === 'IN_TRANSIT',
+                    'bg-green-50 text-green-600': row.status === 'DELIVERED',
+                    'bg-lime-50 text-lime-600': row.status === 'COMPLETED'
+                  }"
+                >
+                  {{ row.status }}
+                </span>
+              </ng-container>
             </td>
+
             <td class="px-4 py-3 text-sm">
               <div class="flex items-center space-x-4">
-                <button (click)="editParcel(row)" class="text-blue-500 hover:text-blue-700">
+                <button
+                  (click)="editParcel(row)"
+                  class="text-blue-500 hover:text-blue-700"
+                >
                   <i class="fas fa-edit"></i>
                 </button>
-                <button (click)="deleteParcel(row.id)" class="text-red-500 hover:text-red-700">
+                <button
+                  (click)="deleteParcel(row.id)"
+                  class="text-red-500 hover:text-red-700"
+                >
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
@@ -72,6 +118,8 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Pagination footer -->
     <div class="flex items-center justify-between mt-4 text-xs text-gray-400">
       <span>Showing {{ filteredParcels.length }} of {{ parcels.length }} entries</span>
       <div class="flex space-x-2">
@@ -82,9 +130,10 @@
     </div>
   </div>
 </div>
+
 <app-edit-parcel-modal
   [visible]="isEditModalVisible"
   [parcel]="selectedParcel"
   (closeEvent)="closeEditModal()"
-  (saveEvent)="saveParcel($event)">
-</app-edit-parcel-modal> 
+  (saveEvent)="saveParcel($event)"
+></app-edit-parcel-modal>

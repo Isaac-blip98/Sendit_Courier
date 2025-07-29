@@ -8,6 +8,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   standalone: true,
@@ -68,7 +69,7 @@ export class CustomerDashboardComponent implements OnInit {
 
 
     // Use the endpoint that returns both sent and received parcels
-    this.customerService.getAllParcelsForUser(this.currentUserId).subscribe({
+    this.customerService.getUserParcels(this.currentUserId).subscribe({
       next: (parcels) => {
 
         this.parcels = parcels || [];
@@ -81,7 +82,7 @@ export class CustomerDashboardComponent implements OnInit {
         this.loading = false;
 
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error(' Failed to load parcels:', err);
         console.error(' Error details:', {
           status: err.status,

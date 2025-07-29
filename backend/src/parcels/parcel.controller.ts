@@ -17,11 +17,15 @@ import { CreateParcelDto } from './dtos/create-parcel.dto';
 import { IParcel } from './interfaces/parcel.interface';
 import { UpdateParcelDto } from './dtos/update-parcel.dto';
 import { AssignCourierDto } from './dtos/assign-courier.dto';
+import { TrackingGateway } from 'src/websockets/tracking.gateway';
 
 @Controller('parcels')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ParcelController {
-  constructor(private readonly parcelService: ParcelService) {}
+  constructor(
+    private readonly parcelService: ParcelService,
+    private readonly trackingGateway: TrackingGateway,
+  ) {}
 
   @Post()
   @Roles(Role.ADMIN)
@@ -39,13 +43,34 @@ export class ParcelController {
     return this.parcelService.findOne(id);
   }
 
+  @Get(':id/tracking')
+  @Roles(Role.ADMIN, Role.CUSTOMER, Role.COURIER)
+  async findOneWithTracking(@Param('id') id: string) {
+    return this.parcelService.findOneWithTracking(id);
+  }
+
+  @Get(':id/events')
+  @Roles(Role.ADMIN, Role.CUSTOMER, Role.COURIER)
+  async getParcelEvents(@Param('id') id: string) {
+    return this.parcelService.getParcelEvents(id);
+  }
+
   @Patch(':id')
   @Roles(Role.ADMIN)
-  update(
+  async update(
     @Param('id') id: string,
     @Body() dto: UpdateParcelDto,
   ): Promise<IParcel> {
-    return this.parcelService.update(id, dto);
+    const updatedParcel = await this.parcelService.update(id, dto);
+    // Broadcast status update if status changed
+    if (dto.status) {
+      this.trackingGateway.broadcastStatusUpdate({
+        parcelId: id,
+        status: dto.status,
+        timestamp: new Date(),
+      });
+    }
+    return updatedParcel;
   }
 
   @Delete(':id')
@@ -54,10 +79,21 @@ export class ParcelController {
     return this.parcelService.softDelete(id);
   }
 
-  @Patch('assign')
+  // FIXED: Use POST instead of PATCH for assignment to avoid routing conflicts
+  @Post('assign')
   @Roles(Role.ADMIN)
-  assignCourier(@Body() dto: AssignCourierDto): Promise<IParcel> {
-    return this.parcelService.assignCourier(dto.parcelId, dto.courierId);
+  async assignCourier(@Body() dto: AssignCourierDto): Promise<IParcel> {
+    console.log('Assign courier endpoint hit with:', dto);
+    const updatedParcel = await this.parcelService.assignCourier(
+      dto.parcelId,
+      dto.courierId,
+    );
+    // Broadcast parcel update
+    this.trackingGateway.broadcastParcelUpdate(dto.parcelId, {
+      type: 'courier-assigned',
+      courierId: dto.courierId,
+    });
+    return updatedParcel;
   }
 
   @Get('user/:userId/all')
@@ -70,5 +106,26 @@ export class ParcelController {
   @Roles(Role.CUSTOMER)
   getParcelStats(@Param('userId') userId: string): Promise<any> {
     return this.parcelService.getParcelStats(userId);
+  }
+
+  @Patch(':id/location-update')
+  @Roles(Role.COURIER)
+  async updateLocation(
+    @Param('id') parcelId: string,
+    @Body() location: { latitude: number; longitude: number },
+  ) {
+    return this.parcelService.updateCourierLocation(parcelId, location);
+  }
+
+  @Patch(':id/unassign')
+  @Roles(Role.ADMIN)
+  async unassignCourier(@Param('id') parcelId: string): Promise<IParcel> {
+    console.log('Unassign courier endpoint hit for parcelId:', parcelId);
+    const updatedParcel = await this.parcelService.unassignCourier(parcelId);
+    // Broadcast parcel update
+    this.trackingGateway.broadcastParcelUpdate(parcelId, {
+      type: 'courier-unassigned',
+    });
+    return updatedParcel;
   }
 }
