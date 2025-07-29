@@ -17,4 +17,9 @@ export class UpdateParcelDto {
   @IsString()
   @IsOptional()
   pickupAddress?: string;
+  
+  location?: {
+    lat: number;
+    lng: number;
+  };
 }

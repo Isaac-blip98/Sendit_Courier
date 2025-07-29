@@ -58,7 +58,7 @@ export interface CourierData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CourierService {
   private apiUrl = `${environment.apiUrl}/couriers`;
@@ -70,32 +70,41 @@ export class CourierService {
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('access_token');
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     });
   }
 
   getCourierById(courierId: string): Observable<CourierData> {
     return this.http.get<CourierData>(`${this.apiUrl}/${courierId}`, {
-      headers: this.getHeaders()
+      headers: this.getHeaders(),
     });
   }
 
   // Fetch assigned parcels separately
   getAssignedParcels(courierId: string): Observable<AssignedParcel[]> {
-    return this.http.get<AssignedParcel[]>(`${this.apiUrl}/${courierId}/parcels`, {
-      headers: this.getHeaders()
-    });
+    return this.http.get<AssignedParcel[]>(
+      `${this.apiUrl}/${courierId}/parcels`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
   }
 
   // Get all available locations along parcel routes
   getParcelRouteLocations(courierId: string): Observable<ParcelLocation[]> {
-    return this.http.get<ParcelLocation[]>(`${this.apiUrl}/${courierId}/route-locations`, {
-      headers: this.getHeaders()
-    });
+    return this.http.get<ParcelLocation[]>(
+      `${this.apiUrl}/${courierId}/route-locations`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
   }
 
-  updateLocation(courierId: string, locationData: LocationUpdateRequest): Observable<LocationUpdateResponse> {
+  updateLocation(
+    courierId: string,
+    locationData: LocationUpdateRequest
+  ): Observable<LocationUpdateResponse> {
     return this.http.patch<LocationUpdateResponse>(
       `${this.apiUrl}/${courierId}/location`,
       locationData,
@@ -103,7 +112,10 @@ export class CourierService {
     );
   }
 
-  getLocationHistory(courierId: string, limit?: number): Observable<CourierLocationHistory[]> {
+  getLocationHistory(
+    courierId: string,
+    limit?: number
+  ): Observable<CourierLocationHistory[]> {
     const params = limit ? `?limit=${limit}` : '';
     return this.http.get<CourierLocationHistory[]>(
       `${this.apiUrl}/${courierId}/location-history${params}`,
@@ -112,11 +124,19 @@ export class CourierService {
   }
 
   // Update parcel status
-  updateParcelStatus(parcelId: string, status: string, location?: { lat: number; lng: number }): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/parcels/${parcelId}/status`, {
-      status,
-      location
-    }, { headers: this.getHeaders() });
+  updateParcelStatus(
+    parcelId: string,
+    status: string,
+    location?: { lat: number; lng: number }
+  ): Observable<any> {
+    return this.http.patch(
+      `${this.apiUrl}/parcels/${parcelId}/status`,
+      {
+        status,
+        location,
+      },
+      { headers: this.getHeaders() }
+    );
   }
 
   // Refresh courier data and notify subscribers
@@ -127,7 +147,7 @@ export class CourierService {
       },
       error: (error) => {
         console.error('Error refreshing courier data:', error);
-      }
+      },
     });
   }
 }

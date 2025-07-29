@@ -12,6 +12,29 @@ export interface UpdateLocationDto {
   address?: string;
 }
 
+export interface ParcelLocation {
+  id: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  type: 'pickup' | 'delivery' | 'waypoint';
+  parcelId: string;
+}
+
+export interface AssignedParcel {
+  id: string;
+  status: string;
+  pickupAddress: string;
+  pickupLat: number;
+  pickupLng: number;
+  destination: string;
+  destinationLat: number;
+  destinationLng: number;
+  receiverName: string;
+  receiverPhone: string;
+  waypoints: ParcelLocation[];
+}
+
 @Injectable()
 export class CourierService {
   constructor(
@@ -263,5 +286,127 @@ async updateAvailability(id: string, isAvailable: boolean) {
     where: { id },
     data: { isAvailable },
   });
+}
+
+async getAssignedParcels(courierId: string): Promise<AssignedParcel[]> {
+  await this.findOne(courierId); // Ensure courier exists
+  const parcels = await this.prisma.parcel.findMany({
+    where: {
+      assignedCourierId: courierId,
+      status: { in: ['PICKED', 'IN_TRANSIT'] },
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      status: true,
+      pickupAddress: true,
+      pickupLat: true,
+      pickupLng: true,
+      destination: true,
+      destinationLat: true,
+      destinationLng: true,
+      receiverName: true,
+      receiverPhone: true,
+      trackingPoints: {
+        select: {
+          id: true,
+          latitude: true,
+          longitude: true,
+          address: true,
+        },
+      },
+    },
+  });
+
+  return parcels.map(parcel => ({
+    id: parcel.id,
+    status: parcel.status,
+    pickupAddress: parcel.pickupAddress,
+    pickupLat: parcel.pickupLat,
+    pickupLng: parcel.pickupLng,
+    destination: parcel.destination,
+    destinationLat: parcel.destinationLat,
+    destinationLng: parcel.destinationLng,
+    receiverName: parcel.receiverName,
+    receiverPhone: parcel.receiverPhone,
+    waypoints: parcel.trackingPoints.map(point => ({
+      id: point.id,
+      address: point.address || 'Waypoint',
+      latitude: point.latitude,
+      longitude: point.longitude,
+      type: 'waypoint' as 'waypoint',
+      parcelId: parcel.id,
+    })),
+  }));
+}
+
+async getParcelRouteLocations(courierId: string): Promise<ParcelLocation[]> {
+  await this.findOne(courierId); // Ensure courier exists
+  const parcels = await this.prisma.parcel.findMany({
+    where: {
+      assignedCourierId: courierId,
+      status: { in: ['PICKED', 'IN_TRANSIT'] },
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      pickupAddress: true,
+      pickupLat: true,
+      pickupLng: true,
+      destination: true,
+      destinationLat: true,
+      destinationLng: true,
+      trackingPoints: {
+        select: {
+          id: true,
+          latitude: true,
+          longitude: true,
+          address: true,
+        },
+      },
+    },
+  });
+
+  const locations: ParcelLocation[] = [];
+
+  parcels.forEach(parcel => {
+    // Add pickup location
+    if (parcel.pickupLat && parcel.pickupLng) {
+      locations.push({
+        id: `${parcel.id}-pickup`,
+        address: parcel.pickupAddress,
+        latitude: parcel.pickupLat,
+        longitude: parcel.pickupLng,
+        type: 'pickup',
+        parcelId: parcel.id,
+      });
+    }
+
+    // Add destination location
+    if (parcel.destinationLat && parcel.destinationLng) {
+      locations.push({
+        id: `${parcel.id}-destination`,
+        address: parcel.destination,
+        latitude: parcel.destinationLat,
+        longitude: parcel.destinationLng,
+        type: 'delivery',
+        parcelId: parcel.id,
+      });
+    }
+
+    // Add tracking points as waypoints
+    parcel.trackingPoints.forEach(point => {
+      locations.push({
+        id: point.id,
+        address: point.address || 'Waypoint',
+        latitude: point.latitude,
+        longitude: point.longitude,
+        type: 'waypoint',
+        parcelId: parcel.id,
+      });
+    });
+  });
+
+  return locations;
 }
 }

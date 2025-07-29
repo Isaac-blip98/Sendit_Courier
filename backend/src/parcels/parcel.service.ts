@@ -200,34 +200,6 @@ export class ParcelService {
     return coordinates;
   }
 
-  async update(id: string, dto: UpdateParcelDto): Promise<IParcel> {
-    await this.findOne(id); // Ensure exists
-
-    // If status is being updated to PICKED, record the pickup time
-    const updateData: any = { ...dto };
-    if (dto.status === 'PICKED') {
-      updateData.pickedUpAt = new Date();
-    }
-
-    const updatedParcel = await this.prisma.parcel.update({
-      where: { id },
-      data: updateData,
-    });
-
-    // Create status change event
-    if (dto.status) {
-      await this.prisma.parcelEvent.create({
-        data: {
-          parcelId: id,
-          status: dto.status as any,
-          notes: 'Status updated by admin',
-        },
-      });
-    }
-
-    return updatedParcel;
-  }
-
   async softDelete(id: string): Promise<void> {
     await this.findOne(id); // Ensure exists
 
@@ -322,6 +294,23 @@ export class ParcelService {
     });
   }
 
+  async findAllByCourier(courierId: string): Promise<IParcel[]> {
+  return this.prisma.parcel.findMany({
+    where: {
+      assignedCourierId: courierId,
+      deletedAt: null,
+    },
+    include: {
+      sender: true,
+      receiver: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+}
+
+
   async getParcelEvents(parcelId: string): Promise<any[]> {
     return this.prisma.parcelEvent.findMany({
       where: { parcelId },
@@ -335,7 +324,7 @@ export class ParcelService {
     lat2: number,
     lon2: number,
   ): number {
-    const R = 6371; 
+    const R = 6371;
     const dLat = this.toRad(lat2 - lat1);
     const dLon = this.toRad(lon2 - lon1);
     const a =
@@ -455,41 +444,89 @@ export class ParcelService {
     return { message: 'Location updated', status: newStatus ?? parcel.status };
   }
 
-async unassignCourier(parcelId: string): Promise<IParcel> {
-  const parcel = await this.prisma.parcel.findUnique({ 
-    where: { id: parcelId },
-    include: { assignedCourier: true }
-  });
-
-  if (!parcel) throw new NotFoundException('Parcel not found');
-  if (!parcel.assignedCourierId) throw new BadRequestException('No courier assigned to this parcel');
-
-  // Update courier availability back to true
-  if (parcel.assignedCourier) {
-    await this.prisma.user.update({
-      where: { id: parcel.assignedCourierId },
-      data: { isAvailable: true },
+  async unassignCourier(parcelId: string): Promise<IParcel> {
+    const parcel = await this.prisma.parcel.findUnique({
+      where: { id: parcelId },
+      include: { assignedCourier: true },
     });
+
+    if (!parcel) throw new NotFoundException('Parcel not found');
+    if (!parcel.assignedCourierId)
+      throw new BadRequestException('No courier assigned to this parcel');
+
+    // Update courier availability back to true
+    if (parcel.assignedCourier) {
+      await this.prisma.user.update({
+        where: { id: parcel.assignedCourierId },
+        data: { isAvailable: true },
+      });
+    }
+
+    // Remove courier assignment
+    const updatedParcel = await this.prisma.parcel.update({
+      where: { id: parcelId },
+      data: {
+        assignedCourierId: null,
+        status: 'PENDING',
+      },
+    });
+
+    // Create unassignment event
+    await this.prisma.parcelEvent.create({
+      data: {
+        parcelId,
+        status: 'PENDING' as any,
+        notes: `Courier unassigned from parcel`,
+      },
+    });
+
+    return updatedParcel;
   }
 
-  // Remove courier assignment
-  const updatedParcel = await this.prisma.parcel.update({
-    where: { id: parcelId },
-    data: { 
-      assignedCourierId: null,
-      status: 'PENDING'
-    },
-  });
+  async update(id: string, dto: UpdateParcelDto): Promise<IParcel> {
+    await this.findOne(id); // Ensure exists
 
-  // Create unassignment event
-  await this.prisma.parcelEvent.create({
-    data: {
-      parcelId,
-      status: 'PENDING' as any,
-      notes: `Courier unassigned from parcel`,
-    },
-  });
+    const updateData: any = { ...dto };
+    if (dto.status === 'PICKED') {
+      updateData.pickedUpAt = new Date();
+    }
 
-  return updatedParcel;
-}
+    const updatedParcel = await this.prisma.parcel.update({
+      where: { id },
+      data: updateData,
+    });
+
+    // Create tracking point if location is provided
+    if (dto.location && updatedParcel.assignedCourierId) {
+      await this.prisma.parcelTracking.create({
+        data: {
+          parcelId: id,
+          courierId: updatedParcel.assignedCourierId,
+          latitude: dto.location.lat,
+          longitude: dto.location.lng,
+          address: null, // Optionally resolve address using GeoService
+          timestamp: new Date(),
+        },
+      });
+    }
+
+    // Create status change event
+    if (dto.status) {
+      await this.prisma.parcelEvent.create({
+        data: {
+          parcelId: id,
+          status: dto.status as any,
+          location: dto.location
+            ? {
+                latitude: dto.location.lat,
+                longitude: dto.location.lng,
+              }
+            : undefined,
+          notes: 'Status updated by courier',
+        },
+      });
+    }
+
+    return updatedParcel;
+  }
 }

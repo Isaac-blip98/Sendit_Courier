@@ -102,6 +102,13 @@ export class ParcelController {
     return this.parcelService.findAllByUser(userId);
   }
 
+@Get('courier/:courierId/all')
+@Roles(Role.COURIER)
+findAllByCourier(@Param('courierId') courierId: string): Promise<IParcel[]> {
+  return this.parcelService.findAllByCourier(courierId);
+}
+
+
   @Get('user/:userId/stats')
   @Roles(Role.CUSTOMER)
   getParcelStats(@Param('userId') userId: string): Promise<any> {

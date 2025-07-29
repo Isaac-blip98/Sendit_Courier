@@ -80,4 +80,16 @@ export class CourierController {
   ) {
     return this.courierService.updateAvailability(id, body.isAvailable);
   }
+
+  @Get(':id/parcels')
+  @Roles(Role.ADMIN, Role.COURIER)
+  getAssignedParcels(@Param('id') id: string) {
+    return this.courierService.getAssignedParcels(id);
+  }
+
+  @Get(':id/route-locations')
+  @Roles(Role.ADMIN, Role.COURIER)
+  getParcelRouteLocations(@Param('id') id: string) {
+    return this.courierService.getParcelRouteLocations(id);
+  }
 }
