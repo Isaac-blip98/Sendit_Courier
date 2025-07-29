@@ -1,25 +1,17 @@
-// ... (keep your existing imports)
-import {
-  PrismaClient,
-  Role,
-  ParcelStatus,
-  WeightCategory,
-} from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import { PrismaClient, Role, WeightCategory } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  // Password hashing
+  const adminPassword = await bcrypt.hash('elvis123', 10);
+  const password1 = await bcrypt.hash('password1', 10);
+  const password2 = await bcrypt.hash('password2', 10);
+  const password3 = await bcrypt.hash('password3', 10);
+  const courierPassword = await bcrypt.hash('courier123', 10);
 
-  const adminPassword = await bcrypt.hash('elvis123', 10); 
-  const user1Password = await bcrypt.hash('customer1', 10);
-  const user2Password = await bcrypt.hash('customer2', 10);
-
-  await prisma.user.deleteMany({
-    where: { email: 'admin@sendit.com' },
-  });
-
-  // Create or update admin
+  // 1. Create ADMIN with updated credentials
   const admin = await prisma.user.upsert({
     where: { email: 'ndiranguelvis97@gmail.com' },
     update: {
@@ -30,97 +22,155 @@ async function main() {
     create: {
       name: 'Elvis',
       email: 'ndiranguelvis97@gmail.com',
-      phone: '0794130919',
       password: adminPassword,
+      phone: '0794130919',
       role: Role.ADMIN,
     },
   });
 
-  // Create customers (unchanged)
-  const customer1 = await prisma.user.upsert({
-    where: { email: 'user1@example.com' },
-    update: {},
-    create: {
-      name: 'Customer One',
-      email: 'user1@example.com',
-      phone: '0711000001',
-      password: user1Password,
-      role: Role.CUSTOMER,
-    },
-  });
+  // 2. Create CUSTOMERS
+  const customers = await Promise.all([
+    prisma.user.upsert({
+      where: { email: 'alice@example.com' },
+      update: { password: password1 },
+      create: {
+        name: 'Alice Mwangi',
+        email: 'alice@example.com',
+        password: password1,
+        phone: '0700111222',
+        role: Role.CUSTOMER,
+      },
+    }),
+    prisma.user.upsert({
+      where: { email: 'brian@example.com' },
+      update: { password: password2 },
+      create: {
+        name: 'Brian Otieno',
+        email: 'brian@example.com',
+        password: password2,
+        phone: '0700333444',
+        role: Role.CUSTOMER,
+      },
+    }),
+    prisma.user.upsert({
+      where: { email: 'catherine@example.com' },
+      update: { password: password3 },
+      create: {
+        name: 'Catherine Wambui',
+        email: 'catherine@example.com',
+        password: password3,
+        phone: '0700555666',
+        role: Role.CUSTOMER,
+      },
+    }),
+  ]);
 
-  const customer2 = await prisma.user.upsert({
-    where: { email: 'user2@example.com' },
-    update: {},
+  // 3. Create COURIERS
+  const courier1 = await prisma.user.upsert({
+    where: { email: 'david@courier.com' },
+    update: { password: courierPassword },
     create: {
-      name: 'Customer Two',
-      email: 'user2@example.com',
-      phone: '0711000002',
-      password: user2Password,
-      role: Role.CUSTOMER,
-    },
-  });
-
-  // Courier (unchanged)
-  const courier = await prisma.courier.upsert({
-    where: { email: 'courier1@sendit.com' },
-    update: {},
-    create: {
-      name: 'Courier One',
-      email: 'courier1@sendit.com',
-      phone: '0722000000',
+      name: 'David Courier',
+      email: 'david@courier.com',
+      password: courierPassword,
+      phone: '0700777888',
+      role: Role.COURIER,
       isAvailable: true,
-      currentLat: -1.2921,
-      currentLng: 36.8219,
+      currentLat: -1.287,
+      currentLng: 36.820,
+      locationHistory: {
+        create: {
+          latitude: -1.287,
+          longitude: 36.820,
+          address: 'Westlands',
+        },
+      },
     },
   });
 
-  // Parcels (unchanged)
-  await prisma.parcel.createMany({
-    data: [
-      {
-        senderId: customer1.id,
-        receiverId: customer2.id,
-        assignedCourierId: courier.id,
-        receiverName: 'Customer Two',
-        receiverPhone: '0711000002',
-        pickupAddress: 'Westlands, Nairobi',
-        pickupLat: -1.2647,
-        pickupLng: 36.8025,
-        destination: 'CBD, Nairobi',
-        destinationLat: -1.2833,
-        destinationLng: 36.8167,
-        weightCategory: WeightCategory.MEDIUM,
-        status: ParcelStatus.PENDING,
+  const courier2 = await prisma.user.upsert({
+    where: { email: 'emily@courier.com' },
+    update: { password: courierPassword },
+    create: {
+      name: 'Emily Rider',
+      email: 'emily@courier.com',
+      password: courierPassword,
+      phone: '0700999000',
+      role: Role.COURIER,
+      isAvailable: true,
+      currentLat: -1.292,
+      currentLng: 36.826,
+      locationHistory: {
+        create: {
+          latitude: -1.292,
+          longitude: 36.826,
+          address: 'Kilimani',
+        },
       },
-      {
-        senderId: customer2.id,
-        receiverId: customer1.id,
-        assignedCourierId: courier.id,
-        receiverName: 'Customer One',
-        receiverPhone: '0711000001',
-        pickupAddress: 'Karen, Nairobi',
-        pickupLat: -1.3124,
-        pickupLng: 36.7219,
-        destination: 'Parklands, Nairobi',
-        destinationLat: -1.2667,
-        destinationLng: 36.8,
-        weightCategory: WeightCategory.HEAVY,
-        status: ParcelStatus.IN_TRANSIT,
-      },
-    ],
+    },
   });
 
-  console.log(
-    'Seed data updated: admin credentials, 2 users, courier, parcels',
-  );
+  // 4. Fetch sender/receiver users
+  const alice = await prisma.user.findUnique({ where: { email: 'alice@example.com' } });
+  const brian = await prisma.user.findUnique({ where: { email: 'brian@example.com' } });
+  const catherine = await prisma.user.findUnique({ where: { email: 'catherine@example.com' } });
+
+  // 5. Create PARCELS if none exist
+  const existingParcels = await prisma.parcel.findMany();
+  if (existingParcels.length === 0) {
+    await prisma.parcel.createMany({
+      data: [
+        {
+          senderId: alice!.id,
+          receiverId: brian!.id,
+          assignedCourierId: courier1.id,
+          receiverName: 'Brian Otieno',
+          receiverPhone: '0700333444',
+          pickupAddress: 'Thika Road',
+          pickupLat: -1.254,
+          pickupLng: 36.839,
+          destination: 'CBD, Nairobi',
+          destinationLat: -1.286,
+          destinationLng: 36.817,
+          weightCategory: WeightCategory.LIGHT,
+        },
+        {
+          senderId: brian!.id,
+          receiverId: catherine!.id,
+          assignedCourierId: courier2.id,
+          receiverName: 'Catherine Wambui',
+          receiverPhone: '0700555666',
+          pickupAddress: 'South B',
+          pickupLat: -1.300,
+          pickupLng: 36.850,
+          destination: 'Westlands',
+          destinationLat: -1.265,
+          destinationLng: 36.802,
+          weightCategory: WeightCategory.MEDIUM,
+        },
+        {
+          senderId: catherine!.id,
+          receiverId: alice!.id,
+          receiverName: 'Alice Mwangi',
+          receiverPhone: '0700111222',
+          pickupAddress: 'Ngong Road',
+          pickupLat: -1.310,
+          pickupLng: 36.790,
+          destination: 'Karen',
+          destinationLat: -1.327,
+          destinationLng: 36.712,
+          weightCategory: WeightCategory.HEAVY,
+        },
+      ],
+    });
+  }
+
+  console.log('✅ Seed complete.');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('❌ Seed error:', e);
     process.exit(1);
   })
-  .finally(() => {
-    prisma.$disconnect();
-  });
+  .finally(() => prisma.$disconnect());

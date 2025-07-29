@@ -20,61 +20,56 @@ model User {
   password         String
   phone            String
   role             Role      @default(CUSTOMER)
-  profileImage     String?   
+  profileImage     String?
   resetCode        String?
   resetCodeExpires DateTime?
   sentParcels      Parcel[]  @relation("SentParcels")
   receivedParcels  Parcel[]  @relation("ReceivedParcels")
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  deletedAt        DateTime?
-}
 
-model Courier {
-  id               String              @id @default(uuid())
-  name             String
-  email            String              @unique
-  phone            String
-  isAvailable      Boolean             @default(true)
-  currentLat       Float?
-  currentLng       Float?
-  assignedParcels  Parcel[]            @relation("CourierParcels")
-  locationHistory  CourierLocation[]   // Track courier movement history
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
-  deletedAt        DateTime?  
+  // Courier-specific fields
+  isAvailable     Boolean           @default(false)
+  currentLat      Float?
+  currentLng      Float?
+  assignedParcels Parcel[]          @relation("CourierParcels")
+  locationHistory CourierLocation[]
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  deletedAt      DateTime?
+  ParcelTracking ParcelTracking[]
 }
 
 model Parcel {
-  id                String         @id @default(uuid())
+  id                String  @id @default(uuid())
   senderId          String
   receiverId        String
   assignedCourierId String?
-  receiverName      String
-  receiverPhone     String
-  pickupAddress     String
-  pickupLat         Float
-  pickupLng         Float
-  destination       String
-  destinationLat    Float
-  destinationLng    Float
-  weightCategory    WeightCategory
-  status            ParcelStatus   @default(PENDING)
-  
-  // New fields for tracking
-  pickedUpAt        DateTime?      // When parcel was actually picked up
-  deliveredAt       DateTime?      // When parcel was delivered
-  estimatedDistance Float?         // Distance in km for route calculation
-  
-  sender            User           @relation("SentParcels", fields: [senderId], references: [id])
-  receiver          User           @relation("ReceivedParcels", fields: [receiverId], references: [id])
-  assignedCourier   Courier?       @relation("CourierParcels", fields: [assignedCourierId], references: [id])
-  
-  events            ParcelEvent[]
-  trackingPoints    ParcelTracking[] // Real-time location tracking
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-  deletedAt         DateTime?
+
+  receiverName   String
+  receiverPhone  String
+  pickupAddress  String
+  pickupLat      Float
+  pickupLng      Float
+  destination    String
+  destinationLat Float
+  destinationLng Float
+  weightCategory WeightCategory
+  status         ParcelStatus   @default(PENDING)
+
+  pickedUpAt        DateTime?
+  deliveredAt       DateTime?
+  estimatedDistance Float?
+
+  sender          User  @relation("SentParcels", fields: [senderId], references: [id])
+  receiver        User  @relation("ReceivedParcels", fields: [receiverId], references: [id])
+  assignedCourier User? @relation("CourierParcels", fields: [assignedCourierId], references: [id])
+
+  events         ParcelEvent[]
+  trackingPoints ParcelTracking[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@index([senderId])
   @@index([receiverId])
@@ -83,45 +78,47 @@ model Parcel {
 
 // New model for tracking parcel location in real-time
 model ParcelTracking {
-  id          String   @id @default(uuid())
-  parcelId    String
-  courierId   String
-  latitude    Float
-  longitude   Float
-  address     String?  // Optional human-readable address
-  timestamp   DateTime @default(now())
-  
-  parcel      Parcel   @relation(fields: [parcelId], references: [id])
-  
+  id        String @id @default(uuid())
+  parcelId  String
+  courierId String
+  courier   User   @relation(fields: [courierId], references: [id])
+
+  latitude  Float
+  longitude Float
+  address   String? // Optional human-readable address
+  timestamp DateTime @default(now())
+
+  parcel Parcel @relation(fields: [parcelId], references: [id])
+
   @@index([parcelId])
   @@index([timestamp])
 }
 
 // Track courier location history
 model CourierLocation {
-  id        String   @id @default(uuid())
+  id        String @id @default(uuid())
   courierId String
+  courier   User   @relation(fields: [courierId], references: [id])
+
   latitude  Float
   longitude Float
   address   String?
   timestamp DateTime @default(now())
-  
-  courier   Courier  @relation(fields: [courierId], references: [id])
-  
+
   @@index([courierId])
   @@index([timestamp])
 }
 
 model ParcelEvent {
-  id         String        @id @default(uuid())
-  parcelId   String
-  status     ParcelStatus
-  location   Json?
-  notes      String?       // Optional notes for status changes
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id        String       @id @default(uuid())
+  parcelId  String
+  status    ParcelStatus
+  location  Json?
+  notes     String? // Optional notes for status changes
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
-  parcel     Parcel        @relation(fields: [parcelId], references: [id])
+  parcel Parcel @relation(fields: [parcelId], references: [id])
 
   @@index([parcelId])
 }
@@ -129,15 +126,15 @@ model ParcelEvent {
 enum Role {
   ADMIN
   CUSTOMER
-  COURIER  // Add courier role
+  COURIER // Add courier role
 }
 
 enum ParcelStatus {
-  PENDING      // Parcel created, waiting for pickup
-  PICKED       // Admin marked as picked (courier has it)
-  IN_TRANSIT   // Courier has left pickup location
-  DELIVERED    // Parcel reached destination
-  CANCELLED    // Cancelled by admin
+  PENDING // Parcel created, waiting for pickup
+  PICKED // Admin marked as picked (courier has it)
+  IN_TRANSIT // Courier has left pickup location
+  DELIVERED // Parcel reached destination
+  CANCELLED // Cancelled by admin
 }
 
 enum WeightCategory {

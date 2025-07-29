@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, MinLength } from 'class-validator';
 
 export class CreateCourierDto {
   @IsString()
@@ -10,4 +10,8 @@ export class CreateCourierDto {
 
   @IsPhoneNumber()
   phone: string;
+
+  @IsString()
+  @MinLength(6)
+  password: string; 
 }

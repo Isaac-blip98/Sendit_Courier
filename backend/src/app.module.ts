@@ -16,6 +16,7 @@ import { ParcelEventsController } from './parcel-events/parcel-events.controller
 import { ParcelEventsModule } from './parcel-events/parcel-events.module';
 import { ParcelEventsService } from './parcel-events/parcel-events.service';
 import { AdminModule } from './admin/admin.module';
+import { WebsocketsModule } from './websockets/websockets.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AdminModule } from './admin/admin.module';
     AppMailerModule,
     ParcelEventsModule,
     AdminModule,
+    WebsocketsModule
   ],
   controllers: [AppController, CourierController, MailerController, ParcelEventsController, ParcelEventsController],
   providers: [AppService, CourierService, MailerService, ParcelEventsService],

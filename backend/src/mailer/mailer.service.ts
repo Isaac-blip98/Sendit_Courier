@@ -41,7 +41,7 @@ export class MailerService {
     try {
       await this.mailerService.sendMail({
         to,
-        subject: 'Courier Assigned to Your Parcel',
+        subject: 'New Parcel Assignment',
         template: 'courier-assigned',
         context: {
           courierName,

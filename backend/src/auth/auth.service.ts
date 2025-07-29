@@ -37,9 +37,7 @@ export class AuthService {
       },
     });
 
-    // Send welcome email
     await this.mailerService.sendWelcomeEmail(user.email, user.name);
-
     return this.signToken(user.id, user.email, user.role);
   }
 
@@ -60,6 +58,7 @@ export class AuthService {
     const payload = { sub: id, email, role };
     return {
       access_token: this.jwt.sign(payload),
+      role,
     };
   }
 
