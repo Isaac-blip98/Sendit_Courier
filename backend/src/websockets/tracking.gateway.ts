@@ -1,4 +1,3 @@
-// src/websockets/tracking.gateway.ts
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -42,7 +41,11 @@ interface StatusUpdate {
 @WebSocketGateway({
   namespace: 'tracking',
   cors: {
-    origin: '*',
+    origin: [
+      'http://localhost:4200',
+      'https://sendit-courier-5q3uq2pix-elvis-projects-2f222bc8.vercel.app',
+      /.*\.vercel\.app$/
+    ],
     credentials: true,
   },
 })
