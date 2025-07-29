@@ -1,27 +1,8 @@
+// customer.service.ts (Angular service)
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, tap, catchError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environment/environment';
-
-export interface Parcel {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  assignedCourierId?: string | null;
-  receiverName: string;
-  receiverPhone: string;
-  pickupAddress: string;
-  pickupLat: number;
-  pickupLng: number;
-  destination: string;
-  destinationLat: number;
-  destinationLng: number;
-  weightCategory: 'LIGHT' | 'MEDIUM' | 'HEAVY';
-  status: 'PENDING' | 'IN_TRANSIT' | 'DELIVERED' | 'CANCELLED';
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-}
 
 export interface ParcelStats {
   totalParcels: number;
@@ -36,98 +17,96 @@ export interface ParcelStats {
   };
 }
 
-@Injectable({ providedIn: 'root' })
-export class CustomerService {
-  private api = 'http://localhost:3000/parcels';
+export interface Parcel {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  assignedCourierId?: string;
+  receiverName: string;
+  receiverPhone: string;
+  pickupAddress: string;
+  pickupLat: number;
+  pickupLng: number;
+  destination: string;
+  destinationLat: number;
+  destinationLng: number;
+  weightCategory: string;
+  status: 'PENDING' | 'PICKED' | 'IN_TRANSIT' | 'DELIVERED' | 'CANCELLED';
+  pickedUpAt?: string;
+  deliveredAt?: string;
+  estimatedDistance?: number;
+  createdAt: string;
+  updatedAt: string;
+  sender?: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+  };
+  receiver?: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+  };
+  assignedCourier?: {
+    id: string;
+    name: string;
+    phone: string;
+    email: string;
+    currentLat: number | null;
+    currentLng: number | null;
+  };
+}
 
-  constructor(private http: HttpClient) {
-  }
+export interface ParcelWithTracking extends Parcel {
+  trackingPoints?: {
+    id: string;
+    latitude: number;
+    longitude: number;
+    address: string | null;
+    timestamp: Date;
+  }[];
+  routeCoordinates?: number[][];
+  currentCourierLocation?: {
+    latitude: number;
+    longitude: number;
+    timestamp: Date;
+  };
+}
+
+export interface ParcelEvent {
+  id: string;
+  parcelId: string;
+  status: string;
+  location?: any;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CustomerService {
+  private apiUrl = `${environment.apiUrl}/parcels`;
+
+  constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('access_token');
-    
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     });
   }
 
-  getParcelsByUser(userId: string): Observable<Parcel[]> {
-    const url = `${this.api}/user/${userId}`;
-    
-    return this.http.get<Parcel[]>(url, { headers: this.getHeaders() }).pipe(
-      catchError(error => {
-        console.error(' getParcelsByUser error:', error);
-        throw error;
-      })
-    );
-  }
-
-  getAllParcelsForUser(userId: string): Observable<Parcel[]> {
-    // Fix: Use consistent API base URL
-    const url = `${environment.apiUrl || 'http://localhost:3000'}/parcels/user/${userId}/all`;
-    
-    return this.http.get<Parcel[]>(url, { headers: this.getHeaders() }).pipe(
-      catchError(error => {
-        console.error(' getAllParcelsForUser error:', error);
-        console.error(' Error status:', error.status);
-        console.error(' Error message:', error.message);
-        console.error(' Error url:', error.url);
-        throw error;
-      })
-    );
-  }
-
-  getParcelById(parcelId: string): Observable<Parcel> {
-    const url = `${this.api}/${parcelId}`;
-    
-    return this.http.get<Parcel>(url, { headers: this.getHeaders() }).pipe(
-      catchError(error => {
-        console.error(' getParcelById error:', error);
-        throw error;
-      })
-    );
-  }
-
-  getParcelStats(userId: string): Observable<ParcelStats> {
-    const url = `${this.api}/user/${userId}/stats`;
-    console.log('📡 API Call: getParcelStats ->', url);
-    
-    return this.http.get<ParcelStats>(url, { headers: this.getHeaders() }).pipe(
-      catchError(error => {
-        console.error(' getParcelStats error:', error);
-        throw error;
-      })
-    );
-  }
-
-  // Helper method to calculate statistics
   calculateStats(parcels: Parcel[], currentUserId: string): ParcelStats {
-    
-    if (!parcels || !Array.isArray(parcels)) {
-      console.warn(' Invalid parcels data for calculateStats:', parcels);
-      return {
-        totalParcels: 0,
-        totalSent: 0,
-        totalReceived: 0,
-        statusCounts: {
-          all: 0,
-          pending: 0,
-          inTransit: 0,
-          delivered: 0,
-          cancelled: 0,
-        },
-      };
-    }
-
-    const sentParcels = parcels.filter((p) => p.senderId === currentUserId);
-    const receivedParcels = parcels.filter((p) => p.receiverId === currentUserId);
-    
-
-    const stats = {
+    const stats: ParcelStats = {
       totalParcels: parcels.length,
-      totalSent: sentParcels.length,
-      totalReceived: receivedParcels.length,
+      totalSent: parcels.filter((p) => p.senderId === currentUserId).length,
+      totalReceived: parcels.filter((p) => p.receiverId === currentUserId)
+        .length,
       statusCounts: {
         all: parcels.length,
         pending: parcels.filter((p) => p.status === 'PENDING').length,
@@ -136,29 +115,103 @@ export class CustomerService {
         cancelled: parcels.filter((p) => p.status === 'CANCELLED').length,
       },
     };
-
     return stats;
   }
 
-  // Helper method to format weight
+  // Get parcel with basic information
+  getParcel(parcelId: string): Observable<Parcel> {
+    return this.http.get<Parcel>(`${this.apiUrl}/${parcelId}`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Get parcel with tracking information
+  getParcelWithTracking(parcelId: string): Observable<ParcelWithTracking> {
+    return this.http.get<ParcelWithTracking>(
+      `${this.apiUrl}/${parcelId}/tracking`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
+
+  // Get parcel events/history
+  getParcelEvents(parcelId: string): Observable<ParcelEvent[]> {
+    return this.http.get<ParcelEvent[]>(`${this.apiUrl}/${parcelId}/events`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Get all parcels for a user
+  getUserParcels(userId: string): Observable<Parcel[]> {
+    return this.http.get<Parcel[]>(`${this.apiUrl}/user/${userId}/all`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Get user parcel statistics
+  getUserParcelStats(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user/${userId}/stats`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Create new parcel
+  createParcel(parcelData: any): Observable<Parcel> {
+    return this.http.post<Parcel>(this.apiUrl, parcelData, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Update parcel
+  updateParcel(parcelId: string, updateData: any): Observable<Parcel> {
+    return this.http.patch<Parcel>(`${this.apiUrl}/${parcelId}`, updateData, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Delete parcel
+  deleteParcel(parcelId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${parcelId}`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Assign courier to parcel
+  assignCourier(parcelId: string, courierId: string): Observable<Parcel> {
+    return this.http.patch<Parcel>(
+      `${this.apiUrl}/assign`,
+      {
+        parcelId,
+        courierId,
+      },
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
+
   formatWeight(weightCategory: string): string {
     switch (weightCategory) {
-      case 'LIGHT':
-        return '< 5 kg';
+      case 'SMALL':
+        return '0 - 1kg';
       case 'MEDIUM':
-        return '5-20 kg';
-      case 'HEAVY':
-        return '> 20 kg';
+        return '1 - 5kg';
+      case 'LARGE':
+        return '5 - 20kg';
+      case 'EXTRA_LARGE':
+        return '20kg+';
       default:
-        return 'N/A';
+        return 'Unknown';
     }
   }
 
-  // Helper method to map status for display
   getDisplayStatus(status: string): string {
     switch (status) {
       case 'PENDING':
-        return 'Pending';
+        return 'Pending Pickup';
+      case 'PICKED':
+        return 'Picked Up';
       case 'IN_TRANSIT':
         return 'In Transit';
       case 'DELIVERED':
@@ -166,7 +219,7 @@ export class CustomerService {
       case 'CANCELLED':
         return 'Cancelled';
       default:
-        return status;
+        return 'Unknown';
     }
   }
 }

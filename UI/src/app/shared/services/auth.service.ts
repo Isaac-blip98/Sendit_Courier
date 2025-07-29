@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 export interface User {
   id: string;
   email: string;
-  role: 'admin' | 'customer';
+  role: 'admin' | 'customer' | 'courier';
   name?: string;
 }
 
@@ -19,7 +19,7 @@ export class AuthService {
   public currentUser$: Observable<User | null> =
     this.currentUserSubject.asObservable();
 
-  private readonly API_URL = 'http://localhost:3000/auth'; 
+  private readonly API_URL = 'http://localhost:3000/auth';
 
   constructor(private http: HttpClient, private router: Router) {
     const savedUser = localStorage.getItem('user');
@@ -29,7 +29,7 @@ export class AuthService {
       }
     } catch (error) {
       console.error('Failed to parse user from localStorage:', error);
-      localStorage.removeItem('user'); 
+      localStorage.removeItem('user');
     }
   }
 
@@ -38,31 +38,33 @@ export class AuthService {
       .post<any>(`${this.API_URL}/login`, { email, password })
       .pipe(
         tap((res) => {
-          const { access_token, user } = res;
+          const { access_token, role } = res;
+
           localStorage.setItem('access_token', access_token);
-          let userObj = user;
-          if (!userObj && access_token) {
+
+          let user: User | null = null;
+          if (access_token) {
             try {
               const decoded: any = jwtDecode(access_token);
-              userObj = {
+              user = {
                 id: decoded.sub,
                 email: decoded.email,
-                role: decoded.role ? decoded.role.toLowerCase() : undefined,
-                name: decoded.name,
+                role: decoded.role?.toLowerCase(),
               };
+              localStorage.setItem('user', JSON.stringify(user));
+              this.currentUserSubject.next(user);
             } catch (e) {
-              userObj = null;
+              console.error('Token decode failed:', e);
             }
           }
-          if (userObj && userObj.role) {
-            userObj.role = userObj.role.toLowerCase();
-          }
-          if (userObj) {
-            localStorage.setItem('user', JSON.stringify(userObj));
+
+          if (user?.role === 'courier') {
+            this.router.navigate(['/courier-dashboard']);
+          } else if (user?.role === 'admin') {
+            this.router.navigate(['/admin']);
           } else {
-            localStorage.removeItem('user');
+            this.router.navigate(['/customer-dashboard']);
           }
-          this.currentUserSubject.next(userObj);
         })
       );
   }
@@ -109,5 +111,10 @@ export class AuthService {
 
   getUser() {
     return JSON.parse(localStorage.getItem('user') || 'null');
+  }
+
+  getCourierId(): string | null {
+    const user = this.getUser();
+    return user?.role === 'courier' ? user.id : null;
   }
 }

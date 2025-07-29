@@ -7,15 +7,26 @@
          [routerLink]="['/admin']"
          routerLinkActive="text-blue-900 bg-blue-50 font-bold"
          [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      
       <a class="block py-2 px-4 rounded-lg font-medium text-gray-700 hover:bg-blue-50"
          [routerLink]="['/admin/users']"
          routerLinkActive="text-blue-900 bg-blue-50 font-bold">Users</a>
+      
       <a class="block py-2 px-4 rounded-lg font-medium text-gray-700 hover:bg-blue-50"
          [routerLink]="['/admin/parcels']"
          routerLinkActive="text-blue-900 bg-blue-50 font-bold">Parcels</a>
+      
       <a class="block py-2 px-4 rounded-lg font-medium text-gray-700 hover:bg-blue-50"
          [routerLink]="['/admin/create-parcel']"
          routerLinkActive="text-blue-900 bg-blue-50 font-bold">Create a Parcel</a>
+      
+      <a class="block py-2 px-4 rounded-lg font-medium text-gray-700 hover:bg-blue-50"
+         [routerLink]="['/admin/couriers']"
+         routerLinkActive="text-blue-900 bg-blue-50 font-bold">Couriers</a>
+      
+      <a class="block py-2 px-4 rounded-lg font-medium text-gray-700 hover:bg-blue-50"
+         [routerLink]="['/admin/parcel-assignment']"
+         routerLinkActive="text-blue-900 bg-blue-50 font-bold">Assign Parcels</a>
     </nav>
   </aside>
 
@@ -25,4 +36,4 @@
       <router-outlet></router-outlet>
     </main>
   </div>
-</div> 
+</div>

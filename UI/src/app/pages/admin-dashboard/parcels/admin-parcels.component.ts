@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditParcelModalComponent } from './edit-parcel-modal.component';
 import { FormsModule } from '@angular/forms';
-import { AdminService, AdminParcel } from '../../../shared/services/admin.service';
+import {
+  AdminService,
+  AdminParcel,
+} from '../../../shared/services/admin.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -10,7 +13,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, EditParcelModalComponent, FormsModule],
   templateUrl: './admin-parcels.component.html',
-  styleUrls: ['./admin-parcels.component.scss']
+  styleUrls: ['./admin-parcels.component.scss'],
 })
 export class AdminParcelsComponent implements OnInit {
   parcels: AdminParcel[] = [];
@@ -38,10 +41,12 @@ export class AdminParcelsComponent implements OnInit {
   }
 
   fetchParcels() {
-    this.parcelSub = this.adminService.getParcels().subscribe((parcels: AdminParcel[]) => {
-      this.parcels = parcels;
-      this.applyFilters();
-    });
+    this.parcelSub = this.adminService
+      .getParcels()
+      .subscribe((parcels: AdminParcel[]) => {
+        this.parcels = parcels;
+        this.applyFilters();
+      });
   }
 
   deleteParcel(parcelId: string) {
@@ -61,22 +66,35 @@ export class AdminParcelsComponent implements OnInit {
 
   saveParcel(updatedParcel: AdminParcel) {
     if (updatedParcel.id) {
-      this.adminService.updateParcel(updatedParcel.id, updatedParcel).subscribe(() => {
-        this.closeEditModal();
-      });
+      this.adminService
+        .updateParcel(updatedParcel.id, updatedParcel)
+        .subscribe(() => {
+          this.closeEditModal();
+        });
     } else {
       console.error('Parcel ID is missing for update.');
     }
   }
-
   onStatusChange(parcelId: string, newStatus: string) {
-    this.adminService.updateParcel(parcelId, { status: newStatus }).subscribe();
+    if (newStatus !== 'PICKED' && newStatus !== 'CANCELLED') {
+      alert('You can only change status to PICKED or CANCELLED');
+      return;
+    }
+
+    this.adminService
+      .updateParcel(parcelId, { status: newStatus })
+      .subscribe(() => {
+        // Optionally notify the admin
+        alert(`Parcel marked as ${newStatus}`);
+      });
   }
 
   applyFilters() {
-    this.filteredParcels = this.parcels.filter(parcel => {
-      const weightMatch = !this.weightFilter || parcel.weightCategory === this.weightFilter;
-      const statusMatch = !this.statusFilter || parcel.status === this.statusFilter;
+    this.filteredParcels = this.parcels.filter((parcel) => {
+      const weightMatch =
+        !this.weightFilter || parcel.weightCategory === this.weightFilter;
+      const statusMatch =
+        !this.statusFilter || parcel.status === this.statusFilter;
       return weightMatch && statusMatch;
     });
   }
@@ -86,4 +104,4 @@ export class AdminParcelsComponent implements OnInit {
     this.statusFilter = '';
     this.applyFilters();
   }
-} 
+}

@@ -11,7 +11,6 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = authService.getToken();
 
-  // Always clone with credentials
   req = req.clone({
     withCredentials: true, 
     setHeaders: token
