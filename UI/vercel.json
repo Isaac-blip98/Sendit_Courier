@@ -1,28 +1,14 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/UI/browser",
+  "outputDirectory": "dist/ui/browser",
   "routes": [
     {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/media/(.*)",
-      "dest": "/media/$1"
-    },
-    {
-      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
-      "dest": "/$1"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  }
+  ]
 }
