@@ -22,6 +22,7 @@ export class AuthService {
 
   // Use environment variable instead of hardcoded URL
   private readonly API_URL = `${environment.apiUrl}/auth`;
+  
 
   constructor(private http: HttpClient, private router: Router) {
     const savedUser = localStorage.getItem('user');
