@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
 export class HeaderComponent implements OnInit {
   currentUser$!: Observable<User | null>;
   isDropdownOpen = false;
+  isMobileMenuOpen = false; // Add this property
 
   constructor(
     private modalService: ModalService,
@@ -40,5 +41,15 @@ export class HeaderComponent implements OnInit {
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  // Add this method to toggle mobile menu
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  // Add this method to close mobile menu when clicking on links
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
   }
 }
