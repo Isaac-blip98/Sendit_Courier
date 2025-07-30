@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../environment/environment';
 
 export interface Parcel {
   orderNumber: string;
@@ -97,9 +98,9 @@ export interface AssignCourierDto {
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private readonly API_URL = 'http://localhost:3000/admin';
-  private readonly PARCELS_URL = 'http://localhost:3000/parcels';
-  private readonly COURIERS_URL = 'http://localhost:3000/couriers';
+  private readonly API_URL = `${environment.apiUrl}/admin`;
+  private readonly PARCELS_URL = `${environment.apiUrl}/parcels`;
+  private readonly COURIERS_URL = `${environment.apiUrl}/couriers`;
 
   // Subject to notify when stats should be refreshed
   statsChanged = new Subject<void>();
@@ -188,7 +189,7 @@ export class AdminService {
     );
   }
 
-  // New courier management methods
+  // Courier management methods
   getCouriers(): Observable<Courier[]> {
     return this.http.get<Courier[]>(this.COURIERS_URL, {
       headers: this.getHeaders()
@@ -232,20 +233,20 @@ export class AdminService {
   }
 
   // Primary parcel assignment method
-assignCourier(data: AssignCourierDto): Observable<AdminParcel> {
-  console.log('Making POST request to:', `${this.PARCELS_URL}/assign`);
-  console.log('With data:', data);
-  
-  return this.http.post<AdminParcel>(`${this.PARCELS_URL}/assign`, data, {
-    headers: this.getHeaders()
-  }).pipe(
-    tap((response) => {
-      console.log('Assignment response:', response);
-      this.parcelsChanged.next();
-      this.couriersChanged.next();
-    })
-  );
-}
+  assignCourier(data: AssignCourierDto): Observable<AdminParcel> {
+    console.log('Making POST request to:', `${this.PARCELS_URL}/assign`);
+    console.log('With data:', data);
+    
+    return this.http.post<AdminParcel>(`${this.PARCELS_URL}/assign`, data, {
+      headers: this.getHeaders()
+    }).pipe(
+      tap((response) => {
+        console.log('Assignment response:', response);
+        this.parcelsChanged.next();
+        this.couriersChanged.next();
+      })
+    );
+  }
 
   // ALIAS: Method that matches component expectations
   assignCourierToParcel(assignmentData: AssignCourierDto): Observable<AdminParcel> {
@@ -253,7 +254,7 @@ assignCourier(data: AssignCourierDto): Observable<AdminParcel> {
     return this.assignCourier(assignmentData);
   }
 
-  // FIXED: Primary unassign method
+  // Primary unassign method
   unassignCourier(parcelId: string): Observable<AdminParcel> {
     console.log('Making PATCH request to:', `${this.PARCELS_URL}/${parcelId}/unassign`);
     

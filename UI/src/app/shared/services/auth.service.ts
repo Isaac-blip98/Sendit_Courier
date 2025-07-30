@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../../environment/environment';
 
 export interface User {
   id: string;
@@ -19,7 +20,8 @@ export class AuthService {
   public currentUser$: Observable<User | null> =
     this.currentUserSubject.asObservable();
 
-  private readonly API_URL = 'http://localhost:3000/auth';
+  // Use environment variable instead of hardcoded URL
+  private readonly API_URL = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient, private router: Router) {
     const savedUser = localStorage.getItem('user');
