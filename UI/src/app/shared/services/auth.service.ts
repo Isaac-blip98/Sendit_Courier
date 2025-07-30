@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
-import { environment } from '../../../environment/environment';
+import { environment } from '../../../environment/environment.prod';
 
 export interface User {
   id: string;

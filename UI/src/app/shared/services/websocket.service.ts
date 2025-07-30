@@ -1,9 +1,7 @@
-// First install socket.io-client: npm install socket.io-client @types/socket.io-client
-
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { environment } from '../../../environment/environment';
+import { environment } from '../../../environment/environment.prod';
 
 interface LocationUpdate {
   parcelId: string;

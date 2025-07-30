@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { environment } from '../../../environment/environment';
+import { environment } from '../../../environment/environment.prod';
 
 export interface Parcel {
   orderNumber: string;
