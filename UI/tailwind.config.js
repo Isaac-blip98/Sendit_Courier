@@ -7,4 +7,10 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  safelist: [
+  'hidden',
+  'block',
+  'md:hidden',
+  'md:block',
+]
 }
